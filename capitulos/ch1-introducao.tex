@@ -1,0 +1,66 @@
+% ==============================================================================
+% TCC - Nome do Aluno
+% Capítulo 1 - Introdução
+% ==============================================================================
+\chapter{Introdução}
+\label{sec-intro}
+
+Pelo teorema da aproximação universal, demonstrado primeiramente para redes com
+largura arbritária com função sigmóide por \cite{cybenko:89}, e para redes 
+com no minímo uma camada escondida por \cite{hornik:89-aprox-universais} atesta
+que redes neurais com uma largura suficientemente grande é capaz de aproximar 
+qualquer função. Em \cite{grippen:03-aprox-universais-profundidade} é demonstrado
+a mesma propriedade para redes com profundidade arbritária e largura fixa.
+
+A aplicação de redes neurais para a solução numérica de equações diferencias podem
+ser encontradas em trabalhos dos anos 90 como \cite{lagaris-etal:98}, 
+\cite{meade-fernandez:94} e \cite{psichogios-etal:92}, e recentemente, em
+\cite{guasti-santos:21}, entretanto, foi apenas com 
+\cite{raissi-etal:19} e a introdução do conceito das 
+\textit{Physics Informed Neural Networks} 
+(PINNs) que se renovou o interesse em aplicar redes neurais para a solução de 
+problemas científicos.
+PINNs podem ser compreendidas como uma técnica avançada de regularização que, ao 
+incorporar as equações que compõem um modelo à função de perda da rede neural. A
+grande diferença da abordagem das PINNs em relação a propostas anteriores, é tratar
+não apenas as equações que compõem o modelo como residuais a serem minimizados, mas 
+também incorporar as condições de fronteira e iniciais. 
+
+Esta abordagem foi possível apenas com o desenvolvimento de técnicas de 
+diferenciação automática, pode-se citar \cite{wengert:64-diferenciao-automatica} 
+para \textit{forward accumulation}, e \cite{linnainmaa:76-diferenciao-automatica} 
+para \textit{inverse accumulation}, como alguns dos primeiro trabalhos a propor 
+esta técnica. Entretanto, foi sua incorporação à bibliotecas como 
+PyTorch \cite{pytorch:19} e TensorFlow \cite{tensorflow:16}, facilitando em muito
+o uso de funções de perda mais complexas, que o uso de redes neurais para a solução
+de equações diferencias se tornou atrativa. 
+
+PINNs foram aplicados para diversos problemas de engenharia, por exemplo,
+escoamento de fluxos incompressíveis \cite{jin-et-al:21-navier-stokes}, 
+problemas epidemiológicos como \cite{shaier-etal:22-dinns}, problemas de formação
+de padrões em modelos de reação-difusão \cite{giampaolo-etal:22-gray-scott}...
+
+No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
+como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.
+Uma proposta utilizando redes neurais convolucionais pode ser encontrada em 
+\cite{shi-etal:24-convnet}. Uma proposta utilizando PINNs combinado com 
+métodos Bayesianos pode ser encontrada em \cite{yang:21-bpinns}, esta 
+abordagem é particulamente interessante para problemas inversos, ao transformar
+a estimativa dos parâmetros numa distribuição, no lugar de um valor fixo.
+
+Modelos compartimentais baseados em equações diferencias foram primeiramente 
+introduzidos por \cite{kermack-mcKendrick:1927}, ao proporem o modelo 
+\textit{Susceptible-Infected-Removed} (SIR). Baseados neste trabalho seminal,
+foram propostos outros modelos com mais mais compartimentos como o 
+\textit{SEIRD} \cite{giles:77-sird} que inclui um compartimento para individuos
+que fora expostos a doença, ainda não manifestaram sintomas. Outro exemplo é o
+\textit{SIRV} \cite{schlickeiser-kroger:21-sirv} que inclui um compartimento
+para vacinados.
+
+Este trabalho está organizado da seguinte forma: no capítulo \ref{sec-literatura} 
+são formalizados os conceitos de PINNs e modelos compartimentais; 
+no capítulo \ref{sec-proposta} é detalhado o método proposto por este 
+trabalho e são definidos os experimentos para averiguar a efetiviade
+do método; no capítulo \ref{sec-avaliacao} são apresentados os resultados e 
+é feita uma avaliação dos mesmos; por fim, no capítulo \ref{sec-conclusoes} são
+apresentadas as conclusões.    
