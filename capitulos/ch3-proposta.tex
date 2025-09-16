@@ -25,16 +25,31 @@ caso não haja um plano de vacinação, logo não há a necessidade de estimá-l
    \frac{dR(t)}{dt} &=& \gamma I(t),  \quad t > t_0, \label{eq:SIR-beta-t-3}
 \end{eqnarray}
 
+Como $S(t) + I(t) + R(t) = N$ para todo $t > t_0$, podemos simplificar as equações
+acima \cite{millevoi-etal:24-split-join-pinns}
+
 \section{Testes com Dados Sintéticos}
 
 Para averiguar se o método proposto funcionará bem com dados reais,
 será feito primeiramente um teste com dados sintéticos obtidos apatir da solução
 do modelo compartimental utilizando o método de Runge-Kutta de 4º ordem
-implementado na biblioteca \textit{SciPy} \cite{scipy}.
+implementado na biblioteca \textit{SciPy} \cite{scipy}. As condições iniciais
+do problema estão definadas nas equações abaixo.
 
-\begin{equation}
+\begin{eqnarray}
+   S_0 &=& 0.99 \label{eq:S0}\\
+   I_0 &=& 0.01, \label{eq:I0}\\
+   R_0 &=& 0 \label{eq:R0}
+\end{eqnarray}
+
+Para simular uma variação anual na taxa de infecção de uma doença, o parâmetro
+$\beta(t)$ é aproximado por uma função seno.semper facilisis lorem 
+
+\begin{equation} \label{eq:beta_t_sintetetico}
     \beta(t) = \sin(t / 12)  + \beta_{min}
 \end{equation}
+
+Utilizando
 
 \section{Testes com Dados Sintéticos Ruidosos}
 
@@ -50,14 +65,16 @@ descreve este processo.
 
 \section{Testes com Base de Dados Reais}
 
+Os dados foram coletados do plataforma \textit{OpenDataSUS} \cite{opendatasus}
+
+
 \subsection{Bases de dados do DataSUS}
 
 \subsection{Tratamento dos Dados}
 Janela móvel de 7 dias como em \cite{han-etal:24-prim-artigo-alemanha},
 \cite{long-etal:21-L2} e \cite{shamsara-etal:25-omicron} para suavizar o ruído
 
-Pesos ajustáveis entre a loss física e a loss dos dados como em
-\cite{han-etal:24-prim-artigo-alemanha}, \cite{long-etal:21-L2} e 
+Pesos ajustáveis entre a loss física e a loss dos dados como em \cite{long-etal:21-L2} e 
 \cite{shamsara-etal:25-omicron}
 
 Segundo \cite{bonfanti-etal:24-generalizacao-pinns}, PINNs não generalizam bem
@@ -76,3 +93,51 @@ Como em \cite{millevoi-etal:24-split-join-pinns}, aplicar uma
 uma função de ativação que retorna apenas valores positivos.
 
 \subsection{Correlação com a Temperatura}
+
+A gripe é uma doença com maior taxa de transmissão nos meses frios. 
+Para testar se a transmissão em função do tempo aproximada pelo modelo é plausível,
+é feito um teste de correlação de \textit{Pearson} entre $\beta(t)$ e a temperatura
+ao longo do ano.
+
+Sendo $\beta$ e $T$ duas amostras de tamanho $n$ com dados pareados $(\beta_i, T_i)$:
+\begin{equation}\label{correlacao-de-pearson}
+\rho = \frac{\sum_{i=1}^{n} (\beta_i - \bar{\beta})(T_i - \bar{T})}{\sqrt{\sum_{i=1}^{n} (\beta_i - \bar{\beta})^2 \sum_{i=1}^{n} (T_i - \bar{T})^2}}
+\end{equation}
+
+Espera-se um valor de $\rho$ acima de 0.5 para indicar um correlação no minímo moderada
+entre a taxa de transmissão $\beta$ e a temperatura.
+
+For two variables $X$ and $Y$ converted to ranks $R(x_i)$ and $R(y_i)$:
+\begin{equation}
+r_s = 1 - \frac{6 \sum_{i=1}^{n} d_i^2}{n(n^2 - 1)}
+\end{equation}
+where:
+\begin{itemize}
+    \item $d_i = R(x_i) - R(y_i)$ is the difference between the two ranks of each observation
+    \item $n$ is the number of observations
+\end{itemize}
+
+Spearman's correlation is equivalent to calculating Pearson's correlation on the rank values:
+\begin{equation}
+r_s = \frac{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})(R(y_i) - \bar{R_y})}{\sqrt{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})^2 \sum_{i=1}^{n} (R(y_i) - \bar{R_y})^2}}
+\end{equation}
+where $\bar{R_x}$ and $\bar{R_y}$ are the mean ranks.
+
+When ties exist in the data, use this adjusted formula:
+\begin{equation}
+r_s = \frac{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})(R(y_i) - \bar{R_y})}{\sqrt{\left[\sum_{i=1}^{n} (R(x_i) - \bar{R_x})^2 - T_x\right]\left[\sum_{i=1}^{n} (R(y_i) - \bar{R_y})^2 - T_y\right]}}
+\end{equation}
+where the tie correction factors $T_x$ and $T_y$ are calculated as:
+\begin{equation}
+T = \sum \frac{t^3 - t}{12}
+\end{equation}
+for each set of tied ranks, with $t$ being the number of tied values in each group.
+
+
+\section{Implementação}
+
+A implementação foi feita utilizando a biblioteca \textit{DeepXDE} \cite{lu-etal:21-deepxde}, 
+utilizando o \textit{TensorFlow} \cite{tensorflow:16} como \textit{backend}. 
+Todo o código, dados utilizados nos experimentos,
+encontram-se disponíveis no repositório público no 
+GitHub\footnote{\url{https://github.com/ginbar/inverse-cm}}.
