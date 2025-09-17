@@ -43,54 +43,122 @@ e largura fixa.
 O pontencial das redes neurais para a solução numérica de equações diferencias 
 já havia percebido nos anos 90, em trabalhos como \cite{psichogios-etal:92} que
 incorporou uma rede neural na modelagem de um bioreator para a estimativa de
-parâmetros que são difíceis de de serem estimados apenas com princípios físicos 
-e químicos. Um outro exemplo que pode ser citado, é \cite{lagaris-etal:98},
+parâmetros que seriam difíceis de de serem estimados apenas com princípios físicos 
+e químicos. Trabalhos seguintes focariam em propor métodos para a solução de 
+quelquer equação diferencial através de redes neurais. 
+Um exemplo que pode ser citado é \cite{meade-fernandez:94}, sendo um dos 
+primeiros a criar uma forma para solucinar EDOs arbritárias utilizando redes 
+neurais, entretanto o método proposto necessita que certas limitações sejam
+impostas às entredas, pesos e vièses da rede. 
+Um outro exemplo de proposta para a solução de qualquer equação diferencial é
+encontrada  em \cite{lagaris-etal:98}, sendo um dos prmeiros trabalhos a 
+propor um método não apenas para a solução de EDOs, mas também para sistemas 
+de EDOs e até mesmo EDPs.
+Os autores separaram o problema em duas partes, as equações diferenciais em sí e 
+as condições de fronteira, sendo a primeira parte aproximada por uma rede neural
+\textit{feedfoward}, e a segunda parte é obtida por meio de restrições duras 
+(\textit{hard constraints}) impostas ao modelo.
 
+Entretanto, foi apenas com \cite{raissi-etal:19} e a introdução do conceito das 
+\textit{Physics Informed Neural Networks} (PINNs) que se renovou o interesse 
+em aplicar redes neurais para a solução de problemas científicos.
+A grande diferença na abordagem das PINNs em relação a propostas anteriores, 
+é tratar não apenas as equações que compõem o modelo, mas também as condições
+de fronteira e iniciais, como residuais a serem minimizados pela função de perda.
+Ou seja, tratando a solução de uma equação diferencial como um problema de
+minimização, sendo as equações e as condições de fronteira e iniciais tratadas 
+como restrições leves (\textit{soft constraints}). 
+Outra inovação, é a incorporação de dados ao treinamento da rede neural, 
+permitindo a descoberta de parâmetros do modelo, através da reformulação do 
+mesmo como um problema inverso.
+Inclusive, os autores elaboraram diversos experimentos com dados pertubados
+para atestar a resiliência do método a dados ruídosos, indicando que PINNs
+podem ser treinadas com dados comprometidos sem afetar drasticamente a qualidade
+da solução obtida.
+Outra possibilidade que o uso de dados proporciona,
+é a descoberta de partes das equações que compõem o modelo,  
 
-\cite{meade-fernandez:94} e , entretanto, 
-foi apenas com \cite{raissi-etal:19} e a introdução do conceito das 
-\textit{Physics Informed Neural Networks} 
-(PINNs) que se renovou o interesse em aplicar redes neurais para a solução de 
-problemas científicos.
-PINNs podem ser compreendidas como uma técnica avançada de regularização que, ao 
-incorporar as equações que compõem um modelo à função de perda da rede neural. A
-grande diferença da abordagem das PINNs em relação a propostas anteriores, é tratar
-não apenas as equações que compõem o modelo como residuais a serem minimizados, mas 
-também incorporar as condições de fronteira e iniciais. 
-
-Esta abordagem foi possível apenas com o desenvolvimento de técnicas de 
-diferenciação automática, pode-se citar \cite{wengert:64-diferenciao-automatica} 
+Esta abordagem foi possível com o desenvolvimento de técnicas de 
+diferenciação automática (DA).
+A importância que a DA tem para as PINNs está ligada ao fato de que incorporar
+as equações do modelo a função de perda faz com que o cálculo da derivada 
+para o algoritmo de retropropagação seja uma tarefa muito complexa. A diferenciação
+automática permite que não seja necessário calcular uma derivada analítica, nem
+utilizar derivdas númericas, que podem levar a erros de arredondamento.
+Apesar da técnica ter sido desenvolvida ainda nos anos 60 e 70 com 
+os trabalhos de \cite{wengert:64-diferenciao-automatica} 
 para \textit{forward accumulation}, e \cite{linnainmaa:76-diferenciao-automatica} 
-para \textit{inverse accumulation}, como alguns dos primeiro trabalhos a propor 
-esta técnica. Entretanto, foi sua incorporação à bibliotecas como 
-PyTorch \cite{pytorch:19} e TensorFlow \cite{tensorflow:16}, facilitando em muito
-o uso de funções de perda mais complexas, que o uso de redes neurais para a solução
-de equações diferencias se tornou atrativa. 
+para \textit{inverse accumulation}, foi com sua incorporação à bibliotecas 
+que implementam estes algoritmos como PyTorch \cite{pytorch:19} e 
+TensorFlow \cite{tensorflow:16}, que facilitou o uso desta técnica,
+e a adoção de funções de perda mais complexas. 
 
-PINNs foram aplicados para diversos problemas de engenharia, por exemplo,
-escoamento de fluxos incompressíveis \cite{jin-et-al:21-navier-stokes}, 
-problemas epidemiológicos como \cite{shaier-etal:22-dinns}, problemas de formação
-de padrões em modelos de reação-difusão \cite{giampaolo-etal:22-gray-scott},
-solução de problemas de física quãntica \cite{jin-etal:2022-schrondiger}.
+Desde sua concepção, PINNs vem sendo aplicadas para diversos problemas 
+de engenharia, por exemplo, escoamento de fluxos incompressíveis 
+\cite{jin-et-al:21-navier-stokes}. Solução de problemas de física, como
+física quãntica como a equação de Schröndiger \cite{jin-etal:2022-schrondiger}
+e modelos cosmologicos \cite{chantada-etal:2023-cosmologia}.
+Pode-se também citar exemplos de aplicações para problemas de ecologia e química, 
+como o problema de formação de padrões em modelos de reação-difusão, como em 
+\cite{giampaolo-etal:22-gray-scott}.
+Problemas envolvendo epidemiológia, como \cite{shaier-etal:22-dinns}, em que
+os autores utilizam PINNs para ajustar modelos compartimentais para várias 
+doenças como dengue, rubeola e gripe. Atestando a efetiviade das PINNs para 
+problemas de epidemiológia modelados por equações diferencias.
 
-No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
-como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.
-Uma proposta utilizando redes neurais convolucionais pode ser encontrada em 
-\cite{shi-etal:24-convnet}. Uma proposta utilizando PINNs combinado com 
-métodos Bayesianos pode ser encontrada em \cite{yang:21-bpinns}, esta 
-abordagem é particulamente interessante para problemas inversos, ao transformar
-a estimativa dos parâmetros numa distribuição, no lugar de um valor fixo.
+Em epidemiológia, modelos compartimentais baseados em equações diferencias 
+são modelos que separam a população em compartimentos e modelam fluxos de 
+individuos entre estes compartimentos como proporcional ao tamanho dos 
+compartimentos envolvdidos multiplicados por parâmetros. Estes parâmetros são
+taxas que indicam a evolução da doença ao longo do tempo, como a taxa de invecção, 
+taxa de mortalidade e taxa de imunização da população. Fazendo com que a variação 
+total de cada compartimento ao longo do tempo, ou seja a diferenciação do mesmo 
+em relação ao tempo, seja igual a soma destes fluxos.
+Eles foram introduzidos por \cite{kermack-mcKendrick:1927}, ao proporem o modelo 
+\textit{Susceptible-Infected-Removed} (\textit{SIR}), que se separa a população, 
+como o nome indica, em sucetíveis, infectados e recuperados.
+Modelos compartimentais são normalmente empregados em epidemiológia, 
+em detrimento de modelos mais complexos, como aqueles baseados em agentes, 
+por sua simplicidade e capacidade de indicar tendências a curto prazo 
+na evolução de uma pandemia. 
+Por serem modelos formados por um sistema de equações ordinárias que, se sabidas 
+as condições iniciais de cada variável, ou seja o número inicial de individuos
+em cada compartimento, tem-se um problema de valor inicial (PVI), que
+pode ser facilmente resolvidos por métodos númericos mais simples, 
+como o método de Runge-Kutta de quarta ordem.
 
-Modelos compartimentais baseados em equações diferencias foram primeiramente 
-introduzidos por \cite{kermack-mcKendrick:1927}, ao proporem o modelo 
-\textit{Susceptible-Infected-Removed} (SIR). Baseados neste trabalho seminal,
-foram propostos outros modelos com mais mais compartimentos como o 
-\textit{SEIRD} \cite{giles:77-sird} que inclui um compartimento para individuos
-que fora expostos a doença, ainda não manifestaram sintomas. Outro exemplo é o
-\textit{SIRV} \cite{schlickeiser-kroger:21-sirv} que inclui um compartimento
-para vacinados.
+Com a declaração da OMS (Organização Mundial de Saúde) em dezembro de 2019 da
+pandemia de COVID-19, o mundo teve que adotar medidas para conter o avanço da 
+doença, como isolamento social e uso de màscaras. Junto às medidas de contenção
+da pandemia, governos mobilizaram os sistemas de saúde para coletar dados
+e permiter aos gorvernantes, e entidades responsáveis pela saúde publica, 
+tomar decisões acerca das medidas restrição.  
+Essas ações geraram uma quantidade grande de dados acerca da quantidade de casos
+notificados, internações, tempo de internação e mortes causadas pela COVID-19. 
 
-Este trabalho está organizado da seguinte forma: no capítulo \ref{sec-literatura} 
+Pode-se citar \cite{long-etal:21-L2} como um dos primeiros trabalhos a utilizar
+PINNs com modelos compartimentais para dados epidemiológicos. Os autores inovaram 
+ao, não apenas utilizar PINNs para solucionar este problema, mas também ao modelar 
+as taxas de variação entre os compartimentos como uma função que tem que ser
+aproximada pela rede neural. A vantagem desta abordagem é considerar que medidas
+de contenção do avanço da doença como isolamento social e vacinação da população
+influenciam em taxas como infecção e mortalidade. Vale notar que no trabalho
+mencionado os autores focaram nas taxas de transmissão, períodos curtos de tempo,
+e osmodelos foram capazes de aproximar apenas funções monotônicas para os parâmetros.   
+
+Neste trabalho é proposto uma abordagem utilizando PINNs para a indentificação 
+de parâmetros em modelos compartimentais, considerando que há uma variabilidade
+na taxa de transmissão ao longo tempo. O principal objetivo é averiguar se PINNs
+são capazes de aproximar as taxas de infecção com precisão, mesmo que elas  
+sigam diferentes tendências ao longo de um período considerável de tempo.
+Para atingir este objetivo são feitos testes com dados sintéticos para avaliar
+se as PINNs conseguem aproximar a taxa de infecção seguindo diferentes tipos de
+função. 
+Em seguida, os mesmos experimentos são repetidos, mas adicionando ruído aos
+dados sintéticos, para avaliar a resiliência do método a dados ruidosos
+Por fim, são realizados testes com dados reais.
+
+O restante do trabalho está organizado da seguinte forma: no capítulo \ref{sec-literatura} 
 são formalizados os conceitos de PINNs e modelos compartimentais; 
 no capítulo \ref{sec-proposta} é detalhado o método proposto por este 
 trabalho e são definidos os experimentos para averiguar a efetiviade

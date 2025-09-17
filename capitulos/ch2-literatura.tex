@@ -151,6 +151,16 @@ inversos
 
 \section{Modelos Compartimentais}
 
+Baseados neste trabalho seminal,foram propostos outros modelos com mais mais 
+compartimentos como o \textit{SEIRD} \cite{giles:77-sird} que inclui um 
+compartimento para individuos que foram expostos a doença, mas 
+ainda não manifestaram sintomas. 
+Outro exemplo é o \textit{SIRV} \cite{schlickeiser-kroger:21-sirv} 
+que inclui um compartimento para vacinados.
+
+Em \cite{kendall:2023-modelos-epd-estocasticos}, é introduzido um modelo estocástico
+baseado no trabalho já citado.
+
 $R_0$ número básico
 
 \begin{equation}
@@ -213,3 +223,11 @@ Modelos de ordem facionária \cite{li-etal:25-ordem-fracionaria}
 Sir reação-difusão \cite{bertaglia-etal:22-sir-reacao-difusao}
 
 Um exemplo utilizando redes neurais recorrentes pode ser encontrado em \cite{rodriguez-etal:2022-einns}
+
+No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
+como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.
+Uma proposta utilizando redes neurais convolucionais pode ser encontrada em 
+\cite{shi-etal:24-convnet}. Uma proposta utilizando PINNs combinado com 
+métodos Bayesianos pode ser encontrada em \cite{yang:21-bpinns}, esta 
+abordagem é particulamente interessante para problemas inversos, ao transformar
+a estimativa dos parâmetros numa distribuição, no lugar de um valor fixo.
