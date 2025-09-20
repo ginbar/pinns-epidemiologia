@@ -74,7 +74,8 @@ Os dados foram coletados do plataforma \textit{OpenDataSUS} \cite{opendatasus}
 Janela móvel de 7 dias como em \cite{han-etal:24-prim-artigo-alemanha},
 \cite{long-etal:21-L2} e \cite{shamsara-etal:25-omicron} para suavizar o ruído
 
-Pesos ajustáveis entre a loss física e a loss dos dados como em \cite{long-etal:21-L2} e 
+Pesos ajustáveis entre a loss física e a loss dos dados como em 
+\cite{long-etal:21-L2} e 
 \cite{shamsara-etal:25-omicron}
 
 Segundo \cite{bonfanti-etal:24-generalizacao-pinns}, PINNs não generalizam bem
@@ -99,6 +100,8 @@ Para testar se a transmissão em função do tempo aproximada pelo modelo é pla
 é feito um teste de correlação de \textit{Pearson} entre $\beta(t)$ e a temperatura
 ao longo do ano.
 
+\subsubsection{Teste de Correlação de Pearson}
+
 Sendo $\beta$ e $T$ duas amostras de tamanho $n$ com dados pareados $(\beta_i, T_i)$:
 \begin{equation}\label{correlacao-de-pearson}
 \rho = \frac{\sum_{i=1}^{n} (\beta_i - \bar{\beta})(T_i - \bar{T})}{\sqrt{\sum_{i=1}^{n} (\beta_i - \bar{\beta})^2 \sum_{i=1}^{n} (T_i - \bar{T})^2}}
@@ -107,31 +110,28 @@ Sendo $\beta$ e $T$ duas amostras de tamanho $n$ com dados pareados $(\beta_i, T
 Espera-se um valor de $\rho$ acima de 0.5 para indicar um correlação no minímo moderada
 entre a taxa de transmissão $\beta$ e a temperatura.
 
-For two variables $X$ and $Y$ converted to ranks $R(x_i)$ and $R(y_i)$:
-\begin{equation}
-r_s = 1 - \frac{6 \sum_{i=1}^{n} d_i^2}{n(n^2 - 1)}
-\end{equation}
-where:
-\begin{itemize}
-    \item $d_i = R(x_i) - R(y_i)$ is the difference between the two ranks of each observation
-    \item $n$ is the number of observations
-\end{itemize}
+\subsubsection{Teste de Correlação de Spearman}
 
-Spearman's correlation is equivalent to calculating Pearson's correlation on the rank values:
-\begin{equation}
-r_s = \frac{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})(R(y_i) - \bar{R_y})}{\sqrt{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})^2 \sum_{i=1}^{n} (R(y_i) - \bar{R_y})^2}}
-\end{equation}
-where $\bar{R_x}$ and $\bar{R_y}$ are the mean ranks.
+A correlação de Spearman é equivalent a calcular a correlação de Pearson nos 
+\textit{ranks} dos valores.
 
-When ties exist in the data, use this adjusted formula:
 \begin{equation}
-r_s = \frac{\sum_{i=1}^{n} (R(x_i) - \bar{R_x})(R(y_i) - \bar{R_y})}{\sqrt{\left[\sum_{i=1}^{n} (R(x_i) - \bar{R_x})^2 - T_x\right]\left[\sum_{i=1}^{n} (R(y_i) - \bar{R_y})^2 - T_y\right]}}
+r_s = \frac{\sum_{i=1}^{n} (R(\beta_i) - \bar{R_{\beta}})(R(T_i) - \bar{R_{T}})}{\sqrt{\sum_{i=1}^{n} (R(\beta_i) - \bar{R_{\beta}})^2 \sum_{i=1}^{n} (R(T_i) - \bar{R_T})^2}}
 \end{equation}
-where the tie correction factors $T_x$ and $T_y$ are calculated as:
+
+Caso haja empates entre os elementos das amostras, aplica-se a fórmula de ajuste
+abaixo.
+
 \begin{equation}
-T = \sum \frac{t^3 - t}{12}
+r_s = \frac{\sum_{i=1}^{n} (R(\beta_i) - \bar{R_{\beta}})(R(T_i) - \bar{R_y})}{\sqrt{\left[\sum_{i=1}^{n} (R(x_i) - \bar{R_x})^2 - T_x\right]\left[\sum_{i=1}^{n} (R(y_i) - \bar{R_y})^2 - T_y\right]}}
 \end{equation}
-for each set of tied ranks, with $t$ being the number of tied values in each group.
+
+Sendo que os fatores $T_x$ e $T_y$ de correção de empate são calculados
+usando as fórmulas abaixo.  
+
+\begin{equation}
+\mathcal{T} = \sum \frac{t^3 - t}{12}
+\end{equation}
 
 
 \section{Implementação}
