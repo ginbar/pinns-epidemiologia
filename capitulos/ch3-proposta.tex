@@ -5,8 +5,10 @@
 \chapter{Proposta do Trabalho}
 \label{sec-proposta}
 
-Nesta seção é apresentada a proposta para a estimativa dos parâmetros do 
-modelo compartimental e os testes para averiguar a efetividade do método.
+Nesta seção é apresentada uma proposta para a estimativa dos parâmetros do 
+modelo compartimental para dados epidemiológicos.
+O modelo utilizado é apresentado, assim como a arquitetura da PINN utilizada.  
+São também detalhados os testes para averiguar a efetividade do método.
 
 \section{Estimativa de parâmetros}
 
@@ -16,25 +18,131 @@ uma projeção de como uma epidemia evoluirá. Entretanto, medidas de afastament
 social são capazes de alterar o parâmetro de transmissão ao longo do tempo.
 Utilizando \cite{long-etal:21-L2} como inspiração, é proposto obter o parâmetro
 $\beta$ como uma função em função do tempo. A rede neural deverá se ajustar 
-a um $\beta(t)$. A taxa de mortalidade de uma doença permanece constante
-caso não haja um plano de vacinação, logo não há a necessidade de estimá-lo. 
+a um $\beta(t)$. O modelo \textit{SIR} passa a ser escrito como, 
 
 \begin{eqnarray}
-   \frac{dS(t)}{dt} &=& -\beta(t) S(t) I(t),  \quad t > t_0, \label{eq:SIR-beta-t-1}\\
-   \frac{dI(t)}{dt} &=& \beta(t) S(t) I(t) - \gamma I(t), \quad t > t_0, \label{eq:SIR-beta-t-2}\\
+   \frac{dS(t)}{dt} &=& -\frac{\beta(t) S(t)}{N} I(t),  \quad t > t_0, \label{eq:SIR-beta-t-1}\\
+   \frac{dI(t)}{dt} &=& \frac{\beta(t) S(t)}{N} I(t) - \gamma I(t), \quad t > t_0, \label{eq:SIR-beta-t-2}\\
    \frac{dR(t)}{dt} &=& \gamma I(t),  \quad t > t_0, \label{eq:SIR-beta-t-3}
 \end{eqnarray}
 
-Como $S(t) + I(t) + R(t) = N$ para todo $t > t_0$, podemos simplificar as equações
-acima \cite{millevoi-etal:24-split-join-pinns}
+A taxa de mortalidade de um doença permanece a mesma para a maioria das doenças,
+logo não há a necessidade de transformá-lo numa equação em função do tempo.
+Considerando esse fato e se inspirando em \cite{millevoi-etal:24-split-join-pinns}, 
+pode-se simplificar o sistama de equações acima, considerando que 
+$S(t) + I(t) + R(t) = N$ para todo $t > t_0$.
+A função $R(t)$ passa então a ser obtida pela subtração do total de individuos
+na população pelos valores de $S(t)$ e $I(t)$.  
+
+\begin{equation} \label{eq:Rt}
+   R(t) = N - S(t) - I(t)
+\end{equation}
+
+A rede neural passar a ter que aproximar uma função $R \rightarrow R^3$ de 
+$(S, I, \beta)$ em função de $t$ como ilustrado 
+na figura \ref{fig:arquitetura-rede-solucao}.
+
+\begin{figure}[htpb]
+\centering
+\begin{tikzpicture}[
+    neuron/.style={circle, draw, minimum size=0.7cm},
+    layer/.style={rectangle, minimum width=1.5cm, minimum height=8cm, draw=black, fill=blue!10, rounded corners=3pt},
+    input/.style={neuron, fill=blue!30},
+    hidden/.style={neuron, fill=orange!30},
+    output/.style={neuron, fill=purple!30},
+    physnode/.style={rectangle, draw, rounded corners, fill=orange!30, minimum width=1.5cm, minimum height=1.8cm},
+    lossnode/.style={rectangle, draw, rounded corners, fill=yellow!30, minimum width=2cm, minimum height=3.2cm, align=center},
+    every edge/.style={draw, ->, thick}
+]
+
+\node[input] (I-1) at (0, 2) {$t$};
+
+\node[hidden] (H1-1) at (2, 4) {$\sigma$};
+\node[hidden] (H1-2) at (2, 3) {$\sigma$};
+\node[hidden] (H1-3) at (2, 2) {$\sigma$};
+\node at (2, 1.1) {$\vdots$};
+\node[hidden] (H1-4) at (2, 0) {$\sigma$};
+
+\node[hidden] (H2-1) at (3.5, 4) {$\sigma$};
+\node[hidden] (H2-2) at (3.5, 3) {$\sigma$};
+\node[hidden] (H2-3) at (3.5, 2) {$\sigma$};
+\node at (3.5, 1.1) {$\vdots$};
+\node[hidden] (H2-4) at (3.5, 0) {$\sigma$};
+
+\node at (4.5, 2.3) {$\dots$};
+
+\node[hidden] (Hn-1) at (5.5, 4) {$\sigma$};
+\node[hidden] (Hn-2) at (5.5, 3) {$\sigma$};
+\node[hidden] (Hn-3) at (5.5, 2) {$\sigma$};
+\node at (5.5, 1.1) {$\vdots$};
+\node[hidden] (Hn-4) at (5.5, 0) {$\sigma$};
+
+\node[output] (O-1) at (7.5, 3) {$S$};
+\node[output] (O-2) at (7.5, 2) {$I$};
+\node[output] (O-3) at (7.5, 1) {$\beta$};
+
+% Connections
+
+\foreach \j in {1,...,4}
+    \path (I-1) edge (H1-\j);
+
+\foreach \i in {1,...,4}
+    \foreach \j in {1,...,4}
+        \path (H1-\i) edge (H2-\j);
+
+\foreach \i in {1,...,4}
+    \foreach \j in {1,...,3}
+        \path (Hn-\i) edge (O-\j);
+
+\end{tikzpicture}
+\caption{Representação gráfica das redes \textit{feedfoward}. Fonte: elaborada pelos autores.}
+\label{fig:arquitetura-rede-solucao}
+\end{figure}
 
 \section{Testes com Dados Sintéticos}
 
 Para averiguar se o método proposto funcionará bem com dados reais,
-será feito primeiramente um teste com dados sintéticos obtidos apatir da solução
-do modelo compartimental utilizando o método de Runge-Kutta de 4º ordem
-implementado na biblioteca \textit{SciPy} \cite{scipy}. As condições iniciais
-do problema estão definadas nas equações abaixo.
+será feito primeiramente um teste com dados sintéticos obtidos a patir da solução
+do modelo compartimental utilizando o método de Runge-Kutta de 4º ordem (RK4)
+implementado na biblioteca \textit{SciPy} \cite{scipy}. O método resolverá 
+o sistema de equações diferencias ao aproximar funções para os 3 compartimentos
+do modelo \text{SIR} com o parãmetro $\beta$ em função do tempo. O único que 
+será conhecido previamente, será justamente a função que descreve $\beta$.
+Para emular um beta que varia em função do tempo, 
+a função \ref{eq:beta_t_sintetetico} será utilizada,
+
+\begin{equation} \label{eq:beta_t_sintetetico}
+    \beta(t) = \sin(\frac{2\pi t}{t_f - t_0})  + \beta_{min}
+\end{equation}
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/real-beta-sir-nonoise.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:beta-sir-semruido}
+\end{figure}
+
+O modelo empregado é ligeiramente diferente do \textit{SIR} original. 
+Será utilizada a sua forma normalizada, bastando remover o divisor $N$
+das equações,
+
+\begin{eqnarray}
+   \frac{dS(t)}{dt} &=& -\beta(t) S(t) I(t),  \quad t > t_0, \label{eq:SIR-beta-t-1-norm}\\
+   \frac{dI(t)}{dt} &=& \beta(t) S(t) I(t) - \gamma I(t), \quad t > t_0, \label{eq:SIR-beta-t-2-norm}\\
+   \frac{dR(t)}{dt} &=& \gamma I(t),  \quad t > t_0, \label{eq:SIR-beta-t-3-norm}
+\end{eqnarray}
+
+Os compartimentos do modelo passam a ter um outro significado, não mostrado
+mais o número de indivíduos em cada compartimento, mas sim a porcentagem 
+da população que está em cada compartimento no instante $t$. 
+Logo, a soma dos três compartimentos será igual a $1$ para todo instante $t$
+
+\begin{equation}
+    S(t) + I(t) + R(t) = 1, \quad t > t_0
+\end{equation}
+
+Levando isso em conta, as condições iniciais do problema são também expressadas
+como porcentagens.
 
 \begin{eqnarray}
    S_0 &=& 0.99 \label{eq:S0}\\
@@ -42,14 +150,24 @@ do problema estão definadas nas equações abaixo.
    R_0 &=& 0 \label{eq:R0}
 \end{eqnarray}
 
-Para simular uma variação anual na taxa de infecção de uma doença, o parâmetro
-$\beta(t)$ é aproximado por uma função seno.semper facilisis lorem 
+O problema é então resolvido para $t_0 \le t \ge t_f$, sendo $t_0=0$ e $t_f=50$.
+A solução númerica obtida é então utilizada para obter um conjunto de 
+$N_{data}$ valores para cada compartimento do modelo \textit{SIR}. 
+Para este experimento, foram usados $100$ A figura \ref{fig:dados-semruido} 
 
-\begin{equation} \label{eq:beta_t_sintetetico}
-    \beta(t) = \sin(t / 12)  + \beta_{min}
-\end{equation}
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/runge-kutta-compartiments-data-sir-nonoise.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-semruido}
+\end{figure}
 
-Utilizando
+A solução com RK4 retorna dados para os três compartimentos, mas como a versão
+do \textit{SIR} utilizada neste trabalho não possui a terceira equação, os 
+dados para o terceiro compartimento (R) não são usados. Tomando como exemplo
+trabalhos como \cite{han-etal:24-prim-artigo-alemanha} que utilizam apenas
+dados do compartimento de infectados, mas conseguem bons resultados, o modelo
+também será treinado apenas com dados sintéticos de incidência de infectados.  
 
 \section{Testes com Dados Sintéticos Ruidosos}
 

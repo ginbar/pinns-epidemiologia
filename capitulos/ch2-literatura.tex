@@ -93,11 +93,14 @@ tangente hiperbólica (\textit{tanh}) \ref{eq:tanh}e
 \textit{Rectfied Linear Unit} (\textit{ReLU}) \ref{eq:relu}.
 
 \begin{eqnarray}
-    sigmoid(x) = \frac{e^x}{e^x}\label{eq:sigmoid}
+    \text{sigmoid}(x) &=& \frac{e^x}{1 + e^x}\label{eq:sigmoid}
     \\
-    tanh(x) = \frac{e^x}{e^x}\label{eq:tanh}
+    \text{tanh}(x) &=& \frac{e^x - e^{-x}}{e^x + e^{-x}}\label{eq:tanh}
     \\ 
-    ReLU(x) = \frac{e^x}{e^x}\label{eq:relu}
+    \text{ReLU}(x) &=& \begin{cases} 
+                        x & \text{if } x > 0 \\
+                        0 & \text{if } x \leq 0 
+                    \end{cases}\label{eq:relu}
 \end{eqnarray}
 
 Um único neurõnio não é capaz de aproximar qualquer função, para isso, eles são 
@@ -253,8 +256,8 @@ tais dados. A função de perda final da rede neural é então definida pela equ
 \ref{eq:loss-total}.
 
 \begin{eqnarray}\label{eq:loss-total} 
-    \mathcal{L}_{\text{total}}(\boldsymbol{\theta}, \boldsymbol{\lambda}) 
-    = \omega_{\text{física}} \mathcal{L}_{\text{física}}(\boldsymbol{\theta}, \boldsymbol{\lambda}) 
+    \mathcal{L}_{\text{total}}(\boldsymbol{\theta}) 
+    = \omega_{\text{física}} \mathcal{L}_{\text{física}}(\boldsymbol{\theta}) 
     + \omega_{\text{dados}} \,\mathcal{L}_{\text{dados}}(\boldsymbol{\theta})
 \end{eqnarray}
 
@@ -262,12 +265,11 @@ Aqui vale menciona que esta não é a única forma de distribuir os pesos da los
 a implementação da biblioteca \textit{DeepXDE} \cite{lu-etal:21-deepxde}
 permite atribuir pesos diferentes a cada condição inicial e de fronteira. 
 Então o problema passa a ser encontrar os conjuntos $\boldsymbol{\theta}^*$ de 
-parâmetros e viéses da rede, e o conjunto $\boldsymbol{\lambda}^*$ de parâmetros
-das equações, que minimiza a função \ref{eq:loss-total}.
+parâmetros e viéses da rede que minimiza a função \ref{eq:loss-total}.
 
 \begin{equation}\label{eq:otimizacao-parametros}
-   (\boldsymbol{\theta}^*, \boldsymbol{\lambda}^*) 
-   = \arg \min_{\boldsymbol{\theta}, \boldsymbol{\lambda}} \mathcal{L}_{\text{total}}(\boldsymbol{\theta}, \boldsymbol{\lambda}), 
+   \boldsymbol{\theta}^* 
+   = \arg \min_{\boldsymbol{\theta}} \mathcal{L}_{\text{total}}(\boldsymbol{\theta}), 
 \end{equation}
 
 Existem muitos métodos de otimização para encontrar os argumentos 
@@ -342,18 +344,29 @@ $J = \omega_{\mathcal{L}} J_{\mathcal{L}} + \omega_{\mathcal{B}} J_{\mathcal{B}}
 \label{fig:pinn-representacao-grafica}
 \end{figure}
 
-A formulação acima vale tanto para problemas diretos, quanto para problemas 
-inversos
-
 \subsection{Pontos de Colocação}
 
-Pontos de colocação são um conceito importante para as PINNs, sendo analogo
-a criação da malha do \textit{MEF}. Entretanto não há um critério em que um
-ponto de   
+Pontos de colocação são um conceito importante para as PINNs, sendo análogos
+a criação da malha do \textit{MEF}. Entretanto, diferente do \textit{MEF}, 
+não há um critério método bem definido para a obtenção destes pontos. 
+Os pontos de colocação podem ser entendidos como uma discretização do domínio
+de uma equação diferencial. O único critério que deve ser atendido é o uso
+de pontos nas condições de fronteira e iniciais do problema.
+Por esta perspectiva, os pontos de colocação podem ser entendidos como uma 
+amostra do domínio na qual a rede neural será treinada. 
+Por este motivo, muitas técnicas de amostragem multidimensional são 
+aplicadas às PINNs para definir os pontos de colocação, pode-se citar como 
+exemplo o hipercubo latino.   
 
-\subsection{Formulação de Problemas Inversos}
+\subsection{Formulação para Problemas Inversos}
 
-$\boldsymbol{\lambda}$
+A formulação para as PINNs apresentada até então foca na resolução de problemas
+diretos. Em \cite{raissi-etal:19} é apresentada uma extensão para a mesma que 
+também soluciona problemas inversos. Solucionar um problema inverso consiste em,
+dado um conjunto de dados representados pela $\mathcal{L}_{\text{dados}}$,
+encontrar um conjunto de parâmetros $\boldsymbol{\lambda}$ que minimaniza a
+$\mathcal{L}_{\text{total}}$.
+A equação \ref{eq:loss-total} pode então ser reescrita como,
 
 \begin{eqnarray}\label{eq:loss-total-problema-inverso} 
     \mathcal{L}_{\text{total}}(\boldsymbol{\theta}, \boldsymbol{\lambda}) 
@@ -361,20 +374,53 @@ $\boldsymbol{\lambda}$
     + \omega_{\text{dados}} \,\mathcal{L}_{\text{dados}}(\boldsymbol{\theta})
 \end{eqnarray}
 
+O problema de minimização descrito em \ref{eq:otimizacao-parametros} passa 
+então a ser encontrar o conjunto $\boldsymbol{\theta}^*$ de parâmetros da rede,
+como também o conjunto $\boldsymbol{\lambda}^*$
+que minimiza a função \ref{eq:loss-total-problema-inverso}, 
 
 \begin{equation}\label{eq:otimizacao-parametros-problema-inverso}
    (\boldsymbol{\theta}^*, \boldsymbol{\lambda}^*) 
    = \arg \min_{\boldsymbol{\theta}, \boldsymbol{\lambda}} \mathcal{L}_{\text{total}}(\boldsymbol{\theta}, \boldsymbol{\lambda}), 
 \end{equation}
 
+Vale salientar que a rede ao encontrar os conjuntos $\boldsymbol{\theta}^*$
+e $\boldsymbol{\lambda}^*$, a rede neral está solucionando tanto o problema
+direto (aproximar uma função que satisfaça as equações diferencias), quanto o 
+problema inverso (encontrar $\boldsymbol{\lambda}^*$). 
+
 \subsection{Arquiteturas Alternativas}
 
 A definição de PINNs como uma rede neural com informação física não se aplica
 apenas a redes \textit{feedfoward}, qualquer arquitetura de redes neurais
-que inclui equações que descrevem os dados em que rede está sendo treinada, pode
-ser considerada uma rede neural informada pela física, uma PINN.
+que incorpora as equações que descrevem os dados em que rede está sendo treinada, 
+pode ser considerada uma rede neural informada pela física, uma PINN.
 
-Desde a publicação do artigo seminal em 2019, uma série de 
+Desde a publicação do artigo seminal em 2019, uma série de arquiteturas 
+alternativas foram propostas utilizando a ideia das PINNs como princípio.
+Em \cite{shi-etal:24-convnet} é proposto uma arquitetura de rede convolucional
+em que uma única camada convolucional é empregada. Nos testes realizados pelos
+autores, a rede neural proposta apresentou uma convergência melhor do que uma 
+PINN convecional para problemas de difusão com diferentes frequências. 
+
+Em \cite{pang-etal:2019-fPINNs} é proposto uma arquitetura de redes neurais 
+informadas pela física em que usa derivadas fracionárias na função de perda.
+O modelo proposto, chamado de \textit{fPINNs}, é capaz de solucionar problemas 
+clássicos como a equação de \textit{Burgers} utilizando derivadas parciais. 
+O resultados são equiparáveis ao MEF.
+
+Em \cite{sirignano-spiliopoulos:2018-deepgalerkin} é proposto o 
+\textit{DeepGalerkin}, um método sem malhas para a solução de equações
+diferencias de alta dimensionalidade que combina o método de Galerkin com
+redes neurais. 
+
+Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
+\cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
+universal de Kolmogorov-Arnold utilizando, foram propostas em as 
+\textit{PIKANs} (\textit{Physically Informed Kolmogorov-Arnold Neural Networks})
+que combinando as funcões de ativação baseadas em \textit{b-splines} das
+\textit{KANs} com a técnica de regressão simbólica para encontrar uma 
+representação analítica das soluções encontradas pela rede neural.
 
 \section{Modelos Compartimentais}
 
