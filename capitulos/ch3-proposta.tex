@@ -28,7 +28,8 @@ a um $\beta(t)$. O modelo \textit{SIR} passa a ser escrito como,
 
 A taxa de mortalidade de um doença permanece a mesma para a maioria das doenças,
 logo não há a necessidade de transformá-lo numa equação em função do tempo.
-Considerando esse fato e se inspirando em \cite{millevoi-etal:24-split-join-pinns}, 
+Considerando esse fato e seguindo o que foi aplicado em trabalhos como 
+\cite{millevoi-etal:24-split-join-pinns} e \cite{ouyoussef-etal:24-subcompartimentos}, 
 pode-se simplificar o sistama de equações acima, considerando que 
 $S(t) + I(t) + R(t) = N$ para todo $t > t_0$.
 A função $R(t)$ passa então a ser obtida pela subtração do total de individuos
@@ -169,17 +170,65 @@ trabalhos como \cite{han-etal:24-prim-artigo-alemanha} que utilizam apenas
 dados do compartimento de infectados, mas conseguem bons resultados, o modelo
 também será treinado apenas com dados sintéticos de incidência de infectados.  
 
+\subsection{Avaliação dos Resultados}
+
+A qualidade da solução obtida pela rede neural é medida pelo uso das métricas
+de \textit{MSE}, norma euclidiana ($\mathcal{L}_2$) e norma no infinito 
+($\mathcal{L}_{\infty}$). 
+O \textit{MSE}, é definida pela equação \ref{eq:mse-metric}  
+
+\begin{equation}\label{eq:mse-metric}
+    \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+\end{equation}
+
+A norma $\mathcal{L}_2$, é definida pela equação \ref{eq:l-2} e corresponde
+a distância euclidiana entre as superfícies. È uma grandeza escalar  
+
+\begin{equation}\label{eq:l-2}
+    \mathcal{L}_2(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|_2 = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
+\end{equation}
+
+A norma $\mathcal{L}_{\infty}$, também chamada de norma máxima, é definida 
+pela equação \ref{eq:l-infinity} e corresponde à distância máxima entre as
+superfícies $\mathbf{x}$ e $\mathbf{y}$. A vantagem dessa métrica é mostrar
+qual é o maior erro pontual. Uma desvantagem desta méstrica, é ser sensível 
+a \textit{outliers}.
+
+\begin{equation}\label{eq:l-infinity}
+    \mathcal{L}_\infty(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|_\infty = \max_{i} |x_i - y_i|
+\end{equation}
+
+A comparação é feita com a solução númerica obtida com RK4 no caso dos 
+compartimentos de sucetíveis e infectados. Para o parâmetro de taxa de infecção
+$\beta$, a comparação é feita com a equação \ref{eq:beta_t_sintetetico}.
+
 \section{Testes com Dados Sintéticos Ruidosos}
 
 Segundo \cite{raissi-etal:19}, PINNs são resilientes a dados ruidosos. Para
-testar se PINNs são capazes de ajustar a 
-adicionar ruído gaussiano aos dados sintéticos. A equação \ref{eq:ruido-gaussiano}
-descreve este processo.
+testar se PINNs são capazes de corretamente aproximar as curvas do \textit{SIR}
+mesmo com dados ruidosos,
+é adicionado ruído gaussiano branco aos dados obtidos na seção anteior.
+A equação \ref{eq:ruido-gaussiano} descreve este processo.
 
 \begin{eqnarray}\label{eq:ruido-gaussiano}
     Z_t \sim \mathcal{N}(0, \sigma) \\
-    \mathcal{N}_t = \mathcal{C}_t + Z_t  
+    \mathcal{N}_t = \max(\mathcal{C}_t + Z_t, 0)  
 \end{eqnarray}
+
+A figura \ref{fig:dados-comruido} mostra o resultado deste processo sobre os dados
+de treinamento. Vale observar que para evitar usar dados negativos, pois são valores
+que não fazem sentido no contexto do modelo, foi utilizada a função de máximo
+entre o valor do dado de treinamento e zero.
+Com este experimento, espera-se validar o método para a aplicação com dados reais,
+que normalmente são pertubados. 
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/runge-kutta-compartiments-data-sir-noisy.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-comruido}
+\end{figure}
+
 
 \section{Testes com Base de Dados Reais}
 
@@ -259,3 +308,5 @@ utilizando o \textit{TensorFlow} \cite{tensorflow:16} como \textit{backend}.
 Todo o código, dados utilizados nos experimentos,
 encontram-se disponíveis no repositório público no 
 GitHub\footnote{\url{https://github.com/ginbar/inverse-cm}}.
+As sementes para a geração de pseudonúmeros foram fixadas para garantir
+a reproducibilidade dos experimentos.
