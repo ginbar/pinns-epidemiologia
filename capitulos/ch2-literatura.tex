@@ -567,11 +567,18 @@ que inclui um compartimento para vacinados.
 Outro exemplo de modelo recente é o \textit{SVIHRD} \cite{nelson-etal:24-japao}
 que inclui compartimentos para hospitalizados e vacinados.
 
+\section{Matriz de nova geração}
+
+Uma forma de se calcular o número de reprodução básico $R_0$ é a aplicar a técnica
+de matriz de nova geração\dots
+
 \section{Problemas Inversos}
 
 Problemas inversos são mal-postos\dots
 
 Identificabilidade de um modelo\dots
+
+PINNs para smalldata\dots
 
 \section{Aplicação de PINNs com Modelos Compartimentais}
 
@@ -641,15 +648,97 @@ PINNs com modelos comportimentais e parâmetros que variam no tempo. Os autores
 aplicaram o modelo \textit{SAIRD} para gerar dados sintéticos para 
 o treinamento de uma PINN. Uma vez validado o modelo, ele é utilizado para se
 ajustar aos dados de COVID-19 da Alemanha. É feito um estudo sobre o
-parâmetro $\omega_{\text{dados}}$ para diferentes valores e seus efeitos na convergência
-da rede e valores obtidos para os parâmetros do problema inverso. 
+parâmetro $\omega_{\text{dados}}$ para diferentes valores e seus efeitos na 
+convergência da rede e valores obtidos para os parâmetros do problema inverso. 
 
-Modelos de ordem facionária \cite{li-etal:25-ordem-fracionaria}
+Um dos primeiros usos de PINNs com parâmetros variando no tempo é proposto em 
+\cite{long-etal:21-L2}. Os autores aplicam uma PINN com o modelo \textit{SIRD}
+para estimar a taxa de transmissão da COVID-19 em três cidades americanas
+ao longo de março de 2020 a outrubro de 2020. Uma vez calculada a estimativa da 
+taxa de transmissão ao longo do tempo, o número de reprodução básico é calculado
+para o mesmo período. 
+Os parâmetros estimados são alimentados numa \textit{Long Short Term Memory} 
+(LSTM) para prever o número de infectados no mês seguinte, outubro. 
+
+Em \cite{shamsara-etal:25-omicron} é apresentado uma aplicação de PINNs
+junto ao modelo \textit{SVIHRD} com parâmetros variando no tempo. 
+Os autores introduzem uma técnica para ajustar o peso $\omega_{\text{dados}}$ 
+ao longo do treinamento da rede. O modelo é então aplicado
+para ajustar a dados de COVID-19 dos países Itália, França e Alemanha. 
+Uma vez estimada a taxa de transmissão da doença, ela é correlacionada com O
+surgimento de variantes do vírus que causa a COVID-19.
+
+Outra extensão feita nos modelos clássicos é proposta em \cite{nguyen-etal:22-raissi-seirp}.
+Os autores modificam o \textit{SEIR} ao adicionar um compartimento $P$ para 
+modelar a concentração de patogêneos em ambientes fechados, e a possibilidade
+de contaminação pela doença através da interação não apenas com o contato com
+individuos contaminados, mas também com a iteração com pantogêneos presentes no
+ambiente. Os autores deduzem os pontos de equilíbrio do modelo e 
+realizam testes com PINNs nos dados de influenza de um colègio
+privado londrino.     
+
+Um exemplo com modelos de ordem fracionária é apresentado em 
+\cite{li-etal:25-ordem-fracionaria}. Os autores utilizam uma versão do 
+\textit{SEIHDR} (\textit{Susceptible-Exposed-Invected-Hospitalized-Deacesed-Recovered}) 
+com derivadas fracionárias de Caputo e parâmetros variando no tempo.
+São feitas análises dos pontos de estabilidade do modelo, e o número de reprodução
+básico é calculado utilizando matrizes de próxima geração. 
+As PINNs são usadas para ajustar o modelo aos dados de COVID-19 do Canadá.
+
+Em \cite{heldmann-etal:23-biobjective-opt} é aplicado o modelo \textit{SVIHRD}
+com uma função de custo multi-objetivo ao tratar a $\mathcal{L}_{\text{física}}$
+e a $\mathcal{L}_{\text{dados}}$ como duas funções objetivos distintas.
+A função de perda da rede é composta por uma aproximação da curva Pareto entre 
+as duas funções objetivos.
+Outra inovação do artigo, é estimar alguns parâmetros utilizando o métedo de 
+diferenças finitas alternativo. 
+As PINNs são aplicadas para os dados de COVID-19 da Alemanha. São feitos ajustes
+aos dados para estimar os parâmetros de transmissão e previsões de curto tempo.  
+
+A combinação de modelos compartimentais com PINNs podem ser utilizados para 
+outros fins que não apenas estimar a taxa de transmissão da doença.
+Em \cite{ghosh-etal:23-subnotificacao} é apresentado uma variação do \textit{SEIR}
+com níveis de imunidade dependentes do tempo e do número de doses de vacinas 
+ministradas, o modelo também considera a eficácia da vacina. 
+Estas adições ao \textit{SEIR} são modeladas na forma de parâmetros extras que 
+podem mover indivíduos do compartimento de recuperados para o compartimento de
+suscetíveis.
+O modelo é aplicado junto a PINNs para estimar o nível de subnotificação de 
+infectados e mortes não atribuídas a COVID-19 na China após o fim da política 
+de COVID zero.
+
+Outro exemplo que combina PINNs com métodos já consolidados na literatura
+pode ser encontrado em \cite{millevoi-etal:24-split-join-pinns}.
+Os autores propõem uma chamada "abordagem separada" (\textit{split approach}),
+a ideia principal é separar o treinamento da rede em duas fases. Na primeira 
+fase, o compartimento de infectados é aproximado utilizando uma rede neural
+que se ajusta aos dados. Na segunda fase, a saída desta rede é então utilizada
+junto a uma PINN para para estimar o número de suscetíveis e a taxa de transmissão
+$\beta$ do modelo \textit{SIR}. A vantagem desta abordagem em comparação com a
+abordagem tradicional, ou "conjunta" (\text{joint approach}) é simplificar a 
+função de perda da rede neural ao simplificar as equações do modelo \textit{SIR}
+que são usadas na função de perda, fazendo com que a PINN tenha uma curva a menos 
+para se ajustar, melhorando a convergência da mesma. Os autores
+testam a abordagem proposta com dados sintéticos e para dados de COVID-19 da Itália,
+além de testes com lacunas nos dados para testar a resiliência da proposta. 
+
+Outro exemplo  \cite{shaier-etal:22-dinns}
+
+Em \cite{ogueda-oliva:23-colombia-duas-cidades} é feita uma modificação no
+modelo \textit{SIRD} para modelar o descolocamento de pessoas duas 
+cidades colombianas de Bogotá e Medellín. A incorporação deste movimento 
+é feita através de uma matriz de transporte e o resultado é um modelo \textit{SIRD}
+com duas populações distintas e, por consequência, dois compartimentos para cada
+compartimento original ($S_1$, $S_2$, $I_1$, $I_2$, ...), assim como parâmetros 
+duplicados ($\beta_1$, $\beta_2$, $\gamma_1$, $\gamma_2$, ...). O modelo é utilizado
+para se ajustar aos dados de COVID-19 da Colômbia de 2021.
+
+\cite{ning-etal:23-pinns-paralelas} são usadas PINNs paralelas...
+
+Mais  \cite{hu-etal:22-identificabilidade}
 
 Um exemplo utilizando redes neurais recorrentes pode ser encontrado 
 em \cite{rodriguez-etal:2022-einns}
-
- \cite{long-etal:21-L2}
 
 % No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
 % como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.

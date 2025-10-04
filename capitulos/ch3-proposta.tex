@@ -238,8 +238,24 @@ Os dados foram coletados do plataforma \textit{OpenDataSUS} \cite{opendatasus}
 \subsection{Bases de dados do DataSUS}
 
 \subsection{Tratamento dos Dados}
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/data-2024-ES.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-reais-sus-crus}
+\end{figure}
+
 Janela móvel de 7 dias como em \cite{han-etal:24-prim-artigo-alemanha},
 \cite{long-etal:21-L2} e \cite{shamsara-etal:25-omicron} para suavizar o ruído
+
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/smoothed-data-2024-ES.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-reais-sus-media-movel}
+\end{figure}
 
 Pesos ajustáveis entre a loss física e a loss dos dados como em 
 \cite{long-etal:21-L2} e 
@@ -259,6 +275,15 @@ Baseando-se em \cite{shaier-etal:22-dinns}, o número de camadas escolhido foi..
 Como em \cite{millevoi-etal:24-split-join-pinns}, aplicar uma 
 \textit{hard-constraint} na rede neural ao utilizar nos nós de saída
 uma função de ativação que retorna apenas valores positivos.
+
+\subsection{Parâmetro  Ajustável}
+
+Aplicando a ideia de \cite{shamsara-etal:25-omicron}, é adicionado uma parâmetros
+$\omega_{\text{dados}}$ ajustável. 
+
+\begin{equation}\label{eq:lambda-aprendivel}
+    \omega_{\text{dados}} = \frac{max(\text{gradientes de }\mathcal{L}_{\text{física}})}{\text{média}(\text{gradientes de }\mathcal{L}_{\text{dados}})}
+\end{equation}
 
 \subsection{Correlação com a Temperatura}
 
