@@ -572,11 +572,20 @@ que inclui compartimentos para hospitalizados e vacinados.
 Uma forma de se calcular o número de reprodução básico $R_0$ é a aplicar a técnica
 de matriz de nova geração\dots
 
+\section{Identificabilidade Estrutural de um Modelo}
+
+Uma questão pertinente a modelos baseados em equações diferencias é a 
+identificabilidade. A identificabilidade está relacionada a capacidade de 
+estabelecer os parâmetros de um modelo de forma única com base nos dados disponíveis
+e independente das condições iniciais\dots
+
+\section{Análise de Sensibilidade}
+
+Partial Rank Correlation Coefficients (PRCC)
+
 \section{Problemas Inversos}
 
 Problemas inversos são mal-postos\dots
-
-Identificabilidade de um modelo\dots
 
 PINNs para smalldata\dots
 
@@ -722,8 +731,6 @@ para se ajustar, melhorando a convergência da mesma. Os autores
 testam a abordagem proposta com dados sintéticos e para dados de COVID-19 da Itália,
 além de testes com lacunas nos dados para testar a resiliência da proposta. 
 
-Outro exemplo  \cite{shaier-etal:22-dinns}
-
 Em \cite{ogueda-oliva:23-colombia-duas-cidades} é feita uma modificação no
 modelo \textit{SIRD} para modelar o descolocamento de pessoas duas 
 cidades colombianas de Bogotá e Medellín. A incorporação deste movimento 
@@ -733,12 +740,77 @@ compartimento original ($S_1$, $S_2$, $I_1$, $I_2$, ...), assim como parâmetros
 duplicados ($\beta_1$, $\beta_2$, $\gamma_1$, $\gamma_2$, ...). O modelo é utilizado
 para se ajustar aos dados de COVID-19 da Colômbia de 2021.
 
-\cite{ning-etal:23-pinns-paralelas} são usadas PINNs paralelas...
+Em \cite{ning-etal:23-pinns-paralelas} são usadas PINNs paralelas para aproximar
+cada compartimento do modelo \textit{SEIRD} com parâmetros variando no tempo.
+Uma PINN pararela usa uma rede \textit{feedfoward} independente para aproximar 
+cada saída da rede, ou para um conjunto de saídas. 
+No artigo, os autores aproximam cada compartimento com uma rede independente, 
+além de usar \textit{skip-connections} para previnir explosão e desaparecimento
+de gradientes. 
+As funções para os parâmetros $\beta$, $\gamma$ e $\mu$ são extraídos dos dos 
+dados de COVID-19 da Itália em 2020 e são feitas previsões de curto prazo.
+Os resultados obtidos com as PINNs são comparados com valores obtidos por métodos
+Bayesianos. 
 
-Mais  \cite{hu-etal:22-identificabilidade}
+Outro exemplo de uso das PINNs paralelas é apresentado em  
+\cite{yang-etal:25-dtpinns-paralelas}. Os autores propõem um modelo com 
+comparimentos para vacinação e reinfecção, sendo que recuperados são movidos 
+para uma compartimento $S_R$ e, caso infectados, movidos para um compartimento 
+$I_2$. 
+A itenção dos autores era demonstrar que a mortalidade entre reinfectados é maior 
+do que entre os infectados.
+Outra novidade, e a proposição das PINNs discretas, as \textit{dtPINNs}. A ideia
+por de trás destas PINNs é utilizar uma rede neural para aproximar cada um dos 
+parâmetro que variam no tempo, um método númerico, como o Runge-Kutta de quarta
+ordem, é empregado para resolver o sistema de equações com os parãmetros que 
+variam no tempo e com os parâmetros estáticos. 
+A função de perda é calculada com base no \textit{MSE} entre a solução obtida pelo
+método númerico e os dados. 
+Os autores utilizam o método desenvolvido para estimar os parâmetros de COVID-19
+do estado da Carolina do Norte, nos Estados Unidos.      
+
+Em \cite{shaier-etal:22-dinns}, é feito um estudo dos efeitos de ruído nos dados
+e dados faltantes na qualidade das soluções obtidas com PINNs para o modelo 
+\textit{SIRD}.
+Também  são realizados estudos dos efeitos de metaparâmetros como taxa de 
+aprendizagem, número de pontos de colocação, largura das camadas escondidas e 
+número de camadas escondidas.
+PINNs são aplicadas juntas a vários modelos compartimentais para uma série de 
+doenças como COVID-19, ebola, rubeola, pneumõnia, polio, dengue e zika. 
+
+Em \cite{madden-etal:24-time-series-sir} é utilizada uma versão diferente do 
+\textit{SIR} que utiliza séries temporais, o \textit{TSIR}.
+A PINN utilizada tem uma entrada de alta dimensionalidade que incorpora dados
+da população, retardos na transmissão da doença, dados sobre as cidades vizinhas.
+O modelo desenvolvido é aplicado para os dados de sarampo da Inglaterra e do país
+de Gales entre os anos de 1944 e 1965. Uma novidade deste artigo é tentar buscar
+formas de inserir explicabilidade nas PINNs através de tecnicas como o
+\textit{SHAP} (\textit{SHapley Additive exPlanations}).
+
+Um exemplo de trabalho utilizando um modelo alternativo pode ser encontrado em
+\cite{hu-etal:22-identificabilidade}, os autores aplicam o modelo \textit{SICDR} 
+(\textit{Susceptible-Infected-Confirmed-Recovered-Deceased}).
+Uma novidade apresentada nesse trabalho, é uma modificação na função de perda
+da PINN que mantem a estabilidade do modelo, mesmo com compartimentos faltantes.
+Outra abordagem inovadora é o uso de funções \textit{wavelet} para suavizar o 
+ruído nos dados.
+O modelo desenvolvido é aplicado para os dados de COVID-19 do Alabama no ano 
+de 2020. 
+
+Em \cite{schiassi-etal:21-xtfc} é proposto uma nova abordagem que combina PINNs
+com uma técnica de interpolação chamada Teoria de Conexões Funcionais.
+O algoritmo funciona aproximando funções por expressões condicionadas, uma expressão
+condicionada uma é a soma de funções livres e um funcional que analiticamente satisfaz
+as condições impostas não importando quais funções livres são escolhidas.
+O modelo proposto é feito \textit{SIR}, \textit{SEIR} e \textit{SEIRS} 
+(Susceptible-Exposed-Infectious-Recovered-Susceptible, um \textit{SEIR} com reinfecção). 
+São feitos testes com dados sintéticos com e sem ruído.
 
 Um exemplo utilizando redes neurais recorrentes pode ser encontrado 
-em \cite{rodriguez-etal:2022-einns}
+em \cite{rodriguez-etal:2022-einns}. Os autores propõem uma \textit{framework} 
+que combina uma rede \textit{feedfoward} informada pela física com redes recorrentes.
+O intuito dos autores é desenvolver uma framework pensada para a previsão de 
+tendências no desenvolvimento de uma pandemia a longo prazo.
 
 % No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
 % como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.
