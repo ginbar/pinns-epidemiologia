@@ -556,17 +556,6 @@ ou seja, nos ponto em que $I$ é igual a zero. O ponto de equilíbrio endêmico
 é atigindo justamente quando o número de novos casos é compensado pelo número
 de indivíduos que se recuperam.
 
-\subsection{Adicionando Compartimentos}
-
-Baseados no modelo \textit{SIR}, foram propostos outros modelos com mais 
-compartimentos como o \textit{SEIRD} \cite{giles:77-sird} que inclui um 
-compartimento para individuos que foram expostos a doença, mas 
-ainda não manifestaram sintomas. 
-Outro exemplo é o \textit{SIRV} \cite{schlickeiser-kroger:21-sirv} 
-que inclui um compartimento para vacinados.
-Outro exemplo de modelo recente é o \textit{SVIHRD} \cite{nelson-etal:24-japao}
-que inclui compartimentos para hospitalizados e vacinados.
-
 \section{Matriz de nova geração}
 
 Uma forma de se calcular o número de reprodução básico $R_0$ é a aplicar a técnica
@@ -588,6 +577,146 @@ Partial Rank Correlation Coefficients (PRCC)
 Problemas inversos são mal-postos\dots
 
 PINNs para smalldata\dots
+
+\section{Adicionando Compartimentos}
+
+Baseados no modelo \textit{SIR}, foram propostos outros modelos com mais 
+compartimentos, como o \textit{SIRD} (Susceptible-Infected-Recovered-Deacesed) 
+\cite{giles:77-sird} que separa o compartimento de \textit{Recovered} em dois, um
+para os indivíduos que se recuperaram (R) e outro para os que vieram a falecer devido
+a doença (D).
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm,
+    box/.style={rectangle, minimum width=2cm, minimum height=1.5cm, 
+                draw=black, thick, align=center, rounded corners=5pt,
+                font=\large\bfseries},
+    arrow/.style={-Stealth, thick, line width=1.2pt},
+    label/.style={midway, sloped, font=\small}
+]
+
+    % Define nodes
+    \node[box, fill=blue!20] (S) {Susceptible \\ S(t)};
+    \node[box, fill=red!20, right=of S] (I) {Infected \\ I(t)};
+    \node[box, fill=green!20, right=of I] (R) {Recovered \\ R(t)};
+    \node[box, fill=orange!20, right=of I, above=of R] (D) {Deacesed \\ D(t)};
+
+    % Transitions
+    \draw (S) edge[->] node[label,above] {$\beta$} (I);
+    \draw (I) edge[->] node[label,above] {$\gamma$} (R);
+    \draw (I) edge[->] node[label,above] {$\alpha$} (D);
+
+\end{tikzpicture}
+\caption{Grafo para o \textit{SIRD}. Fonte: elaborada pelos autores.}
+\label{fig:sird-grafo}
+\end{figure}
+
+Outro exemplo é o \textit{SEIR} que inclui um compartimento para individuos que 
+foram expostos a doença, mas ainda não manifestaram sintomas, ele é aplicável a 
+doenças que possuem um tempo de latência entre o contanto com patogêneo e o surgimento
+dos sintomas e capacidade do indivíduo de transmitir a doença. 
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={rectangle, minimum width=2cm, minimum height=1.5cm, 
+                draw=black, thick, align=center, rounded corners=5pt,
+                font=\large\bfseries},
+    arrow/.style={-Stealth, thick, line width=1.2pt},
+    label/.style={midway, sloped, font=\small}
+]
+
+    % Define nodes
+    \node[box, fill=blue!20] (S) {Susceptible \\ S(t)};
+    \node[box, fill=orange!20, right=of S] (E) {Exposed \\ E(t)};
+    \node[box, fill=red!20, right=of E] (I) {Infected \\ I(t)};
+    \node[box, fill=green!20, right=of I] (R) {Recovered \\ R(t)};
+
+    % Transitions
+    \draw (S) edge[->] node[label,above] {$\beta$} (E);
+    \draw (E) edge[->] node[label,above] {$\gamma$} (I);
+    \draw (I) edge[->] node[label,above] {$\alpha$} (R);
+
+\end{tikzpicture}
+\caption{Grafo para o \textit{SIRD}. Fonte: elaborada pelos autores.}
+\label{fig:seir-grafo}
+\end{figure}
+
+Compartimentos podem também ser removidos, como é o caso do modelo \textit{SIS}
+apresentado no mesmo conjunto de trabalhos de Kermack e McKendrick 
+\cite{kermack-mcKendrick-pt2:1932}, é um modelo com aplicação para doenças que 
+não geram imunidade, como gripe e resfriado.  
+Obviamente, é possível extender esse modelo, como é o caso do \textit{SEIS}, sendo
+o \textit{SIS} com um compartimento para indivíduos expostos. 
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm,
+    box/.style={rectangle, minimum width=2cm, minimum height=1.5cm, 
+                draw=black, thick, align=center, rounded corners=5pt,
+                font=\large\bfseries},
+    arrow/.style={-Stealth, thick, line width=1.2pt},
+    label/.style={midway, sloped, font=\small}
+]
+
+    % Define nodes
+    \node[box, fill=blue!20] (S) {Susceptible \\ S(t)};
+    \node[box, fill=red!20, right=of S] (I) {Infected \\ I(t)};
+
+    % Transitions
+    \draw (S) edge[->] node[label,above] {$\beta$} (I);
+    \draw (I) edge[->] node[label,above] {$\gamma$} (S);
+
+\end{tikzpicture}
+\caption{Grafo para o \textit{SIS}. Fonte: elaborada pelos autores.}
+\label{fig:sis-grafo}
+\end{figure}
+
+Compartimentos podem ser usados para modelar fenômenos específicos como a vacinação.
+É o caso de modekos como o \textit{SIRV} \cite{schlickeiser-kroger:21-sirv} 
+e \textit{SIRVD}. indivíduos são vacinados a uma taxa $\alpha$ e adquirem imunidade
+à doença. Um parâmetro $\phi$ pode ser adicionado para dar conta de casos em que
+a vacinação não é eficaz. 
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm,
+    box/.style={rectangle, minimum width=2cm, minimum height=1.5cm, 
+                draw=black, thick, align=center, rounded corners=5pt,
+                font=\large\bfseries},
+    arrow/.style={-Stealth, thick, line width=1.2pt},
+    label/.style={midway, sloped, font=\small}
+]
+
+    % Define nodes
+    \node[box, fill=blue!20] (S) {Susceptible \\ S(t)};
+    \node[box, fill=red!20, right=of S] (I) {Infected \\ I(t)};
+    \node[box, fill=green!20, right=of I] (R) {Recovered \\ R(t)};
+    \node[box, fill=orange!20, right=of I, above=of R] (V) {Vacinated \\ V(t)};
+
+    % Transitions
+    \draw (S) edge[->] node[label,above] {$\beta$} (I);
+    \draw (I) edge[->] node[label,above] {$\gamma$} (R);
+    \draw (S) edge[->] node[label,above] {$\alpha$} (V);
+
+\end{tikzpicture}
+\caption{Grafo para o \textit{SIRD}. Fonte: elaborada pelos autores.}
+\label{fig:sirv-grafo}
+\end{figure}
+
+Exemplos de modelos mais recentes, como o \textit{SVIHRD}, podem ser encontrados
+em trabalhos como \cite{nelson-etal:24-japao}.
+que inclui compartimentos para hospitalizados e vacinados e foi aplicado para 
+modelar a pandemia de COVID-19. Outro exemplo é o \textit{SEIHDR}. 
+
+\section{Variantes de Modelos Compartimentais}
+
+\textit{SIR} com difusão \cite{noble:1974-sir-difusao}    
 
 \section{Aplicação de PINNs com Modelos Compartimentais}
 
