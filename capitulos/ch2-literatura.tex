@@ -196,6 +196,22 @@ do inglês, \textit{mean root square} (\textit{MSE}), como definida na equação
     \mathcal{L} = MSE = \frac{1}{N} \sum_{i=0}^{N}(y_i - \hat{y}_i)^{2}
 \end{equation}
 
+Para problemas de classificação de classificação, aplica-se a função de entropia
+cruzada \textit{cross-entropy} \ref{eq:cross-entropy} para problemas de 
+classificação binária.
+
+\begin{equation}\label{eq:cross-entropy}
+    \mathcal{L} = MSE = - \sum_{i=0}^{N}(\frac{1}{N} y_i - \hat{y}_i)^{2}
+\end{equation}
+
+Já para o caso de classificação com multiplos rótulos, aplica-se e a função 
+de \textit{softmax} \ref{eq:softmax}.
+
+\begin{eqnarray}
+    \rho_i &=& \frac{e^{z_i}}{\sum_{i=0}^{N}e^{z_j}} \\
+    \mathcal{L} &=& arg max (\rho_0, \rho_1, \cdots, \rho_r) \label{eq:softmax}
+\end{eqnarray}
+
 A atualização dos pesos de cada camada se dá pela cálculo do grandiente
 de uma função de erro $\mathcal{L}$. O "tamanho do passo" que será dado
 é determinado por um parâmetro $\alpha$ chamado de taxa de aprendizagem.
@@ -205,7 +221,14 @@ de uma função de erro $\mathcal{L}$. O "tamanho do passo" que será dado
 \end{eqnarray}
 
 A propagação dos erros se dá pelo algoritmo de retropropagação, sendo um caso 
-de aplicação da regra da cadeia. 
+de aplicação da regra da cadeia. A derivada da  
+
+\begin{equation}\label{eq:derivida-loss}
+    \frac{d\mathcal{L}}{d\sigma^{L}} \cdot 
+    \frac{d\sigma^{L}}{d\sigma^{L}} \cdot
+    \cdots
+\end{equation}
+
 
 
 \section{Redes Neurais Informadas pela Física}
@@ -396,12 +419,37 @@ apenas a redes \textit{feedfoward}, qualquer arquitetura de redes neurais
 que incorpora as equações que descrevem os dados em que rede está sendo treinada, 
 pode ser considerada uma rede neural informada pela física, uma PINN.
 
+PINNs para EDPs estáticas \cite{zhang-etal:2020-stochastic-pde-pinns}
+ 
+Composing partial differential equations with physics-aware neural networks - FINN
+
+gPINNs - Gradient PINNs \cite{mohammadian-etal:2023-gradient-enhanced}
+
+rnn-dct networks \cite{benjamin-etal:2022-rnn-dct-networks}
+
+PhyCRNet \cite{ren-etal:2022-phycrnet}
+
+BiPDE \cite{pakravan-et:2021-bipde}
+
+Hierarchical learning to solve pdes using physics-informed neural networks.
+\cite{han-etal:2023-hierarchical-learning}
+
 Desde a publicação do artigo seminal em 2019, uma série de arquiteturas 
 alternativas foram propostas utilizando a ideia das PINNs como princípio.
 Em \cite{shi-etal:24-convnet} é proposto uma arquitetura de rede convolucional
 em que uma única camada convolucional é empregada. Nos testes realizados pelos
 autores, a rede neural proposta apresentou uma convergência melhor do que uma 
-PINN convecional para problemas de difusão com diferentes frequências. 
+PINN convecional para problemas de difusão com diferentes frequências.
+
+Conservative PINNs \cite{jagtap-etal:2020-convervative-pinns}
+
+Extended physics-informed neural networks \cite{jagtap-etal:2020-extended-pinns}
+
+Distribuited PINNs \cite{dwivedi:2019-distributed-pinns}
+
+Augmented PINNs \cite{hu-etal:2023-augmented-pinns}
+
+Fuzzy PINNs \cite{fugh-etal:2022-fuzzy-pinns}
 
 Em \cite{pang-etal:2019-fPINNs} é proposto uma arquitetura de redes neurais 
 informadas pela física em que usa derivadas fracionárias na função de perda.

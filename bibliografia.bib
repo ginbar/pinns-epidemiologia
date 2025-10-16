@@ -736,6 +736,14 @@ year = {1994}
   url          = {https://opendatasus.saude.gov.br/dataset/notificacoes-de-sindrome-gripal-leve-2024}
 }
 
+@misc{flunet,
+  author       = {World Health Organization},
+  title        = {FluNet},
+  howpublished = {\url{https://www.who.int/tools/flunet}},
+  note         = {Accessed: 2025-09-07},
+  url          = {https://www.who.int/tools/flunet}
+}
+
 @article{pang-etal:19-fractional-pinns,
 author = {Pang, Guofei and Lu, Lu and Karniadakis, George Em},
 title = {fPINNs: Fractional Physics-Informed Neural Networks},
@@ -864,3 +872,185 @@ URL = {https://doi.org/10.1137/18M1229845}
   doi       = {10.1038/250726a0},
   url       = {https://doi.org/10.1038/250726a0}
 }
+
+@article{tamerius-etal:2013-fatores-influenza,
+    doi = {10.1371/journal.ppat.1003194},
+    author = {Tamerius, James D. AND Shaman, Jeffrey AND Alonso, Wladmir J. AND Bloom-Feshbach, Kimberly AND Uejio, Christopher K. AND Comrie, Andrew AND Viboud, Cécile},
+    journal = {PLOS Pathogens},
+    publisher = {Public Library of Science},
+    title = {Environmental Predictors of Seasonal Influenza Epidemics across Temperate and Tropical Climates},
+    year = {2013},
+    month = {03},
+    volume = {9},
+    url = {https://doi.org/10.1371/journal.ppat.1003194},
+    pages = {1-12},
+    number = {3},
+}
+
+@article{nascimento-etal:2020-DA-e-pinns-odes,
+	title = {A tutorial on solving ordinary differential equations using Python and hybrid physics-informed neural network},
+	journal = {Engineering Applications of Artificial Intelligence},
+	volume = {96},
+	pages = {103996},
+	year = {2020},
+	issn = {0952-1976},
+	doi = {https://doi.org/10.1016/j.engappai.2020.103996},
+	url = {https://www.sciencedirect.com/science/article/pii/S095219762030292X},
+	author = {Renato G. Nascimento and Kajetan Fricke and Felipe A.C. Viana},
+	keywords = {Physics-informed neural network, Scientific machine learning, Uncertainty quantification, Hybrid model python implementation},
+}
+
+@article{zhang-etal:2020-stochastic-pde-pinns,
+	author = {Zhang, Dongkun and Guo, Ling and Karniadakis, George Em},
+	title = {Learning in Modal Space: Solving Time-Dependent Stochastic PDEs Using Physics-Informed Neural Networks},
+	journal = {SIAM Journal on Scientific Computing},
+	volume = {42},
+	number = {2},
+	pages = {A639-A665},
+	year = {2020},
+	doi = {10.1137/19M1260141},
+	URL = {https://doi.org/10.1137/19M1260141},
+	eprint = {https://doi.org/10.1137/19M1260141}
+}
+
+@article{jagtap-etal:2020-convervative-pinns,
+	title = {Conservative physics-informed neural networks on discrete domains for conservation laws: Applications to forward and inverse problems},
+	journal = {Computer Methods in Applied Mechanics and Engineering},
+	volume = {365},
+	pages = {113028},
+	year = {2020},
+	issn = {0045-7825},
+	doi = {https://doi.org/10.1016/j.cma.2020.113028},
+	url = {https://www.sciencedirect.com/science/article/pii/S0045782520302127},
+	author = {Ameya D. Jagtap and Ehsan Kharazmi and George Em Karniadakis},
+	keywords = {cPINN, Mortar PINN, Domain decomposition, Machine learning, Conservation laws, Inverse problems},
+	abstract = {We propose a conservative physics-informed neural network (cPINN) on discrete domains for nonlinear conservation laws. Here, the term discrete domain represents the discrete sub-domains obtained after division of the computational domain, where PINN is applied and the conservation property of cPINN is obtained by enforcing the flux continuity in the strong form along the sub-domain interfaces. In case of hyperbolic conservation laws, the convective flux contributes at the interfaces, whereas in case of viscous conservation laws, both convective and diffusive fluxes contribute. Apart from the flux continuity condition, an average solution (given by two different neural networks) is also enforced at the common interface between two sub-domains. One can also employ a deep neural network in the domain, where the solution may have complex structure, whereas a shallow neural network can be used in the sub-domains with relatively simple and smooth solutions. Another advantage of the proposed method is the additional freedom it gives in terms of the choice of optimization algorithm and the various training parameters like residual points, activation function, width and depth of the network etc. Various forms of errors involved in cPINN such as optimization, generalization and approximation errors and their sources are discussed briefly. In cPINN, locally adaptive activation functions are used, hence training the model faster compared to its fixed counterparts. Both, forward and inverse problems are solved using the proposed method. Various test cases ranging from scalar nonlinear conservation laws like Burgers, Korteweg–de Vries (KdV) equations to systems of conservation laws, like compressible Euler equations are solved. The lid-driven cavity test case governed by incompressible Navier–Stokes equation is also solved and the results are compared against a benchmark solution. The proposed method enjoys the property of domain decomposition with separate neural networks in each sub-domain, and it efficiently lends itself to parallelized computation, where each sub-domain can be assigned to a different computational node.}
+}
+
+@article{jagtap-etal:2020-extended-pinns,
+	title={Extended physics-informed neural networks (xpinns): A generalized space-time domain decomposition based deep learning framework for nonlinear partial differential equations},
+	author={Jagtap, Ameya D and Karniadakis, George Em},
+	journal={Communications in Computational Physics},
+	volume={28},
+	number={5},
+	pages={2002--2041},
+	year={2020}
+}
+
+@article{hu-etal:2023-augmented-pinns,
+	title = {Augmented Physics-Informed Neural Networks (APINNs): A gating network-based soft domain decomposition methodology},
+	journal = {Engineering Applications of Artificial Intelligence},
+	volume = {126},
+	pages = {107183},
+	year = {2023},
+	issn = {0952-1976},
+	doi = {https://doi.org/10.1016/j.engappai.2023.107183},
+	url = {https://www.sciencedirect.com/science/article/pii/S0952197623013672},
+	author = {Zheyuan Hu and Ameya D. Jagtap and George Em Karniadakis and Kenji Kawaguchi},
+	keywords = {Physics-informed neural network, Extended physics-informed neural network, Domain decomposition, Gating networks},
+}
+
+@article{dwivedi:2019-distributed-pinns,
+	title={Distributed physics informed neural network for data-efficient solution to partial differential equations},
+	author={Vikas Dwivedi and Nishant Parashar and Balaji Srinivasan},
+	journal={ArXiv},
+	year={2019},
+	volume={abs/1907.08967},
+	url={https://api.semanticscholar.org/CorpusID:198147990}
+}
+
+@article{fugh-etal:2022-fuzzy-pinns,
+	title = {Interval and fuzzy physics-informed neural networks for uncertain fields},
+	journal = {Probabilistic Engineering Mechanics},
+	volume = {68},
+	pages = {103240},
+	year = {2022},
+	issn = {0266-8920},
+	doi = {https://doi.org/10.1016/j.probengmech.2022.103240},
+	url = {https://www.sciencedirect.com/science/article/pii/S0266892022000273},
+	author = {Jan N. Fuhg and Ioannis Kalogeris and Amélie Fau and Nikolaos Bouklas},
+	keywords = {Physics-informed machine learning, Fuzzy set theory, Interval set theory, Non-probabilistic uncertainty},
+	abstract = {Temporally and spatially dependent uncertain parameters are regularly encountered in engineering applications. Commonly these uncertainties are accounted for using random fields and processes, which require knowledge about the appearing probability distributions functions that is not readily available. In these cases non-probabilistic approaches such as interval analysis and fuzzy set theory are helpful to analyze uncertainty. Partial differential equations involving fuzzy and interval fields are traditionally solved using the finite element method where the input fields are sampled using some basis function expansion methods. This approach however relies on information about the spatial correlation of the fields, which is not always obtainable. In this work we utilize physics-informed neural networks (PINNs) to solve interval and fuzzy partial differential equations. The resulting network structures termed interval physics-informed neural networks (iPINNs) and fuzzy physics-informed neural networks (fPINNs) show promising results for obtaining bounded solutions of equations involving spatially and/or temporally uncertain parameter fields. In contrast to finite element approaches, no correlation length specification of the input fields as well as no Monte-Carlo simulations are necessary. In fact, information about the input interval fields is obtained directly as a byproduct of the presented solution scheme. Furthermore, all major advantages of PINNs are retained, i.e. meshfree nature of the scheme, and ease of inverse problem set-up.}
+}
+
+@article{mohammadian-etal:2023-gradient-enhanced,
+	title = {Gradient-enhanced physics-informed neural networks for power systems operational support},
+	journal = {Electric Power Systems Research},
+	volume = {223},
+	pages = {109551},
+	year = {2023},
+	issn = {0378-7796},
+	doi = {https://doi.org/10.1016/j.epsr.2023.109551},
+	url = {https://www.sciencedirect.com/science/article/pii/S0378779623004406},
+	author = {Mostafa Mohammadian and Kyri Baker and Ferdinando Fioretto},
+	keywords = {Deep learning, Power system dynamics, Physics-informed neural networks, Optimal power flow, Transfer learning},
+}
+
+@article{ren-etal:2022-phycrnet,
+	title = {PhyCRNet: Physics-informed convolutional-recurrent network for solving spatiotemporal PDEs},
+	journal = {Computer Methods in Applied Mechanics and Engineering},
+	volume = {389},
+	pages = {114399},
+	year = {2022},
+	issn = {0045-7825},
+	doi = {https://doi.org/10.1016/j.cma.2021.114399},
+	url = {https://www.sciencedirect.com/science/article/pii/S0045782521006514},
+	author = {Pu Ren and Chengping Rao and Yang Liu and Jian-Xun Wang and Hao Sun},
+	keywords = {Convolutional-recurrent learning, Partial differential equations, Encoder–decoder, Physics-informed deep learning, Residual connection, Hard-encoding of I/BCs},
+}
+
+@article{pakravan-et:2021-bipde,
+	title = {Solving inverse-PDE problems with physics-aware neural networks},
+	journal = {Journal of Computational Physics},
+	volume = {440},
+	pages = {110414},
+	year = {2021},
+	issn = {0021-9991},
+	doi = {https://doi.org/10.1016/j.jcp.2021.110414},
+	url = {https://www.sciencedirect.com/science/article/pii/S0021999121003090},
+	author = {Samira Pakravan and Pouria {A. Mistani} and Miguel A. Aragon-Calvo and Frederic Gibou},
+	keywords = {Inverse problems, Differential equations, Deep learning, Scientific machine learning, Numerical methods},
+}
+
+@inproceedings{benjamin-etal:2022-rnn-dct-networks,
+	author="Wu, Benjamin
+	and Hennigh, Oliver
+	and Kautz, Jan
+	and Choudhry, Sanjay
+	and Byeon, Wonmin",
+	editor="Groen, Derek
+	and de Mulatier, Cl{\'e}lia
+	and Paszynski, Maciej
+	and Krzhizhanovskaya, Valeria V.
+	and Dongarra, Jack J.
+	and Sloot, Peter M. A.",
+	title="Physics Informed RNN-DCT Networks for Time-Dependent Partial Differential Equations",
+	booktitle="Computational Science -- ICCS 2022",
+	year="2022",
+	publisher="Springer International Publishing",
+	address="Cham",
+	pages="372--379",
+	isbn="978-3-031-08754-7"
+}
+
+@inproceedings{han-etal:2023-hierarchical-learning,
+	author="Han, Jihun
+	and Lee, Yoonsang",
+	editor="Miky{\v{s}}ka, Ji{\v{r}}{\'i}
+	and de Mulatier, Cl{\'e}lia
+	and Paszynski, Maciej
+	and Krzhizhanovskaya, Valeria V.
+	and Dongarra, Jack J.
+	and Sloot, Peter M.A.",
+	title="Hierarchical Learning to Solve PDEs Using Physics-Informed Neural Networks",
+	booktitle="Computational Science -- ICCS 2023",
+	year="2023",
+	publisher="Springer Nature Switzerland",
+	address="Cham",
+	pages="548--562",
+	abstract="The neural network-based approach to solving partial differential equations has attracted considerable attention. In training a neural network, the network learns global features corresponding to low-frequency components while high-frequency components are approximated at a much slower rate. For a class of equations in which the solution contains a wide range of scales, the network training process can suffer from slow convergence and low accuracy due to its inability to capture the high-frequency components. In this work, we propose a sequential training based on a hierarchy of networks to improve the convergence rate and accuracy of the neural network solution to partial differential equations. The proposed method comprises multi-training levels in which a newly introduced neural network is guided to learn the residual of the previous level approximation. We validate the efficiency and robustness of the proposed hierarchical approach through a suite of partial differential equations.",
+	isbn="978-3-031-36024-4"
+}
+
+
+
