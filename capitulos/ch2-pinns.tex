@@ -235,8 +235,11 @@ de aplicação da regra da cadeia. A derivada da
 
 Apresentadas em \cite{raissi-etal:19}, PINNs podem ser entendidas como uma forma
 avançada de regularização, ou como um problema de otimização que transforma 
-as condições de fronteira e iniciais em penalizações para a função custo. PINNs
-são capazes de resolver problemas no seguinte formato: 
+as condições de fronteira e iniciais em penalizações para a função custo. 
+
+\subsection{PINNs como Solucionadores de Equações Diferenciais}
+
+PINNs são capazes de resolver problemas no seguinte formato: 
 
 \begin{eqnarray}
     \mathcal{D}(u(\boldsymbol{x},t);\boldsymbol{\lambda}) &=& f(u,\boldsymbol{x},t), \quad \boldsymbol{x} \in \Omega, \, t \in I, \label{model-1-a}\\
@@ -367,20 +370,6 @@ $J = \omega_{\mathcal{L}} J_{\mathcal{L}} + \omega_{\mathcal{B}} J_{\mathcal{B}}
 \label{fig:pinn-representacao-grafica}
 \end{figure}
 
-\subsection{Pontos de Colocação}
-
-Pontos de colocação são um conceito importante para as PINNs, sendo análogos
-a criação da malha do \textit{MEF}. Entretanto, diferente do \textit{MEF}, 
-não há um critério método bem definido para a obtenção destes pontos. 
-Os pontos de colocação podem ser entendidos como uma discretização do domínio
-de uma equação diferencial. O único critério que deve ser atendido é o uso
-de pontos nas condições de fronteira e iniciais do problema.
-Por esta perspectiva, os pontos de colocação podem ser entendidos como uma 
-amostra do domínio na qual a rede neural será treinada. 
-Por este motivo, muitas técnicas de amostragem multidimensional são 
-aplicadas às PINNs para definir os pontos de colocação, pode-se citar como 
-exemplo o hipercubo latino.   
-
 \subsection{Formulação para Problemas Inversos}
 
 A formulação para as PINNs apresentada até então foca na resolução de problemas
@@ -412,7 +401,21 @@ e $\boldsymbol{\lambda}^*$, a rede neral está solucionando tanto o problema
 direto (aproximar uma função que satisfaça as equações diferencias), quanto o 
 problema inverso (encontrar $\boldsymbol{\lambda}^*$). 
 
-\subsection{Arquiteturas Alternativas}
+\subsection{Pontos de Colocação}
+
+Pontos de colocação são um conceito importante para as PINNs, sendo análogos
+a criação da malha do \textit{MEF}. Entretanto, diferente do \textit{MEF}, 
+não há um critério método bem definido para a obtenção destes pontos. 
+Os pontos de colocação podem ser entendidos como uma discretização do domínio
+de uma equação diferencial. O único critério que deve ser atendido é o uso
+de pontos nas condições de fronteira e iniciais do problema.
+Por esta perspectiva, os pontos de colocação podem ser entendidos como uma 
+amostra do domínio na qual a rede neural será treinada. 
+Por este motivo, muitas técnicas de amostragem multidimensional são 
+aplicadas às PINNs para definir os pontos de colocação, pode-se citar como 
+exemplo o hipercubo latino.
+
+\section{Arquiteturas Alternativas}
 
 A definição de PINNs como uma rede neural com informação física não se aplica
 apenas a redes \textit{feedfoward}, qualquer arquitetura de redes neurais
@@ -429,11 +432,6 @@ rnn-dct networks \cite{benjamin-etal:2022-rnn-dct-networks}
 
 PhyCRNet \cite{ren-etal:2022-phycrnet}
 
-BiPDE \cite{pakravan-et:2021-bipde}
-
-Hierarchical learning to solve pdes using physics-informed neural networks.
-\cite{han-etal:2023-hierarchical-learning}
-
 Desde a publicação do artigo seminal em 2019, uma série de arquiteturas 
 alternativas foram propostas utilizando a ideia das PINNs como princípio.
 Em \cite{shi-etal:24-convnet} é proposto uma arquitetura de rede convolucional
@@ -441,26 +439,87 @@ em que uma única camada convolucional é empregada. Nos testes realizados pelos
 autores, a rede neural proposta apresentou uma convergência melhor do que uma 
 PINN convecional para problemas de difusão com diferentes frequências.
 
-Conservative PINNs \cite{jagtap-etal:2020-convervative-pinns}
+BiPDE \cite{pakravan-et:2021-bipde}
 
-Extended physics-informed neural networks \cite{jagtap-etal:2020-extended-pinns}
+Hierarchical learning to solve pdes using physics-informed neural networks.
+\cite{han-etal:2023-hierarchical-learning}
 
-Distribuited PINNs \cite{dwivedi:2019-distributed-pinns}
+Propostas em \cite{jagtap-etal:2020-convervative-pinns}, as conservative PINNs 
+(cPINNs) utilizam leis de conservação não-lineares para a solução de problemas 
+em domínios discretos. Para aplicar as cPINNs, o domínio é fragmentado em subdomínios
+nos quais as cPINNs aão empregadas, a propriedade de conversão é garantida pela 
+aplicação de continuidade ao longo de todos os subdomínios. Nas fronteiras entre
+os subdomínios, a solução é obtida pela média das saídas de cada cPINN.
+Uma vantagem desta arquitetura é permitir que em cada subdomínio sejam utilizados
+diferentes meta-parãmetros, como número de camadas escondidas, funcões de ativação
+e otimizadores.
+A arquitetura é capaz de tirar grade proveito de processamento paralelo.  
 
-Augmented PINNs \cite{hu-etal:2023-augmented-pinns}
+Utilizando as cPINNs como base, as \textit{Extended Physics-informed Neural Networks}
+(XPINNs) são propostas em \cite{jagtap-etal:2020-extended-pinns}. Assim como as 
+cPINNs, o domínio é fragmentado em subdomínios permetindo que a otimização dos
+meta-parâmetros possa ser feita em cada rede. 
+A grande novidade da arquitetura é a possibilidade de aproximar qualquer EDP.
+Outra novidade é a decomposição arbritária do domínio, o que permite tirar ainda
+mais profeito de paralelismo durante o treinamento do modelo.
+A arquitetura foi aplicada em PDE não-lineares com geometrias complexas, 
+aproveitando a decomposição de domínio.
+Continuando o desenvolvimento da arquitetura, em \cite{hu-etal:2023-augmented-pinns}
+são propostas as \textit{Augmented PINNs} (APINNs), a novidade da arquitetura 
+é tornar a fragmentação dos subdomínios treinável.
+A arquitetura permite que dados de treinamento sejam usados entre diferentes 
+fragmentos, aumentando a generalização do modelo.
+A performance das APINNs é consideravelmente superior a das XPINNs em termos 
+de fragmentação do domínio e generalização.
 
-Fuzzy PINNs \cite{fugh-etal:2022-fuzzy-pinns}
+Aproveitando as possibilidades que o uso de paralelismo pode trazer em termos 
+de velocindade no tempo de treinamento, em \cite{dwivedi:2019-distributed-pinns}
+são propostas as Distribuited PINNs (DPINNs). A principal ideia por trás deste método
+é fragmentar o domínio do problema em partes que devem ser aproximadas por uma rede
+neural independente. Uma vantagem dessa abordagem é que é possível utilizar redes
+mais simples em cada fragmento, ao invés de aplicar uma única rede mais complexa
+para todo o domínio. A função de perda é calculada com base na aproximação de cada
+rede neural que funcionam como PINNs paralelas. O método é capaz de aproximar 
+corretamente problemas difícies como as equações de Navier-Stokes de forma satisfatória
+utilizando redes simples, obtendo resultados melhores do que aqueles com uma
+rede neural informada pela física centralizada.
+
+Problemas de engenharia costumam ter parâmetros incertos que são dependentes 
+de variáveis temporais e espaciais, estas incertezas são contornadas utilizando
+processos que as modelam.
+Métodos como o MEF são capazes de resolver tais equações, mas é necessário ter um
+conhecimento \textit{a priori} sobre as distribuições que modelam o fenômeno estudado,
+fazendo com que métodos puramente estátiscos sejam insuficientes.
+É comum empregar técnicas como teoria de conjuntos difusos junto aos métodos 
+tradicionais de solução de equações diferenciais.
+Aproveitando o potencial que as PINNs e conjuntos difusos tem para a soluções 
+de equações com tais características, em \cite{fugh-etal:2022-fuzzy-pinns} 
+são propostos dois novos modelos as 
+\textit{Interval Physics-Informed Neural Networks} (iPINNs) e 
+\textit{Fuzzy Physics-Informed Neural Networks} (fPINNs) que combinadas, 
+são capazes de resolver problemas envolvendo equações diferencias e conjuntos 
+difusos sem conhecimentos prévios. Uma rede neural é responsável pela a aproximação 
+das entradas, enquanto a outra fica responsável por aproximar a solução da PDE.  
+O método proposto mantêm as vantagens das PINNs, como não precisar de uma 
+malha de pontos, e ser capaz de resolver problemas de forma direta e inversa
+sem alterações significativas nos métodos.
 
 Em \cite{pang-etal:2019-fPINNs} é proposto uma arquitetura de redes neurais 
-informadas pela física em que usa derivadas fracionárias na função de perda.
-O modelo proposto, chamado de \textit{fPINNs}, é capaz de solucionar problemas 
-clássicos como a equação de \textit{Burgers} utilizando derivadas parciais. 
-O resultados são equiparáveis ao MEF.
+informadas pela física pensada para equações diferenciais de ordem fracionária.
+O principal entrave para o uso de PINNs convecionais na solução dessas equações
+está ligado ao fato de que algoritmos de diferenciação automática são otimizados
+para equações de ordem inteira.
+A arquitetura proposta, chamado de \textit{fPINNs}, contorna tais limitações ao
+aplicar uma abordagem mista que utiliza diferenciação automática para a parte inteira
+das derivadas e derivadas númericas para a parte fracionária.
+A arquitetura proposta foi capaz de solucionar problemas clássicos como a equação de 
+\textit{Burgers} utilizando derivadas parciais de ordem fracionária, obtendo
+resultados equiparáveis ao MEF.
 
-Em \cite{sirignano-spiliopoulos:2018-deepgalerkin} é proposto o 
-\textit{DeepGalerkin}, um método sem malhas para a solução de equações
-diferencias de alta dimensionalidade que combina o método de Galerkin com
-redes neurais. 
+% Em \cite{sirignano-spiliopoulos:2018-deepgalerkin} é proposto o 
+% \textit{DeepGalerkin}, um método sem malhas para a solução de equações
+% diferencias de alta dimensionalidade que combina o método de Galerkin com
+% redes neurais. 
 
 Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
 \cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
