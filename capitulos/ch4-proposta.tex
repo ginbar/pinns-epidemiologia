@@ -271,7 +271,7 @@ do domínio de treinamento como em \cite{millevoi-etal:24-split-join-pinns}.
 Assim como em \cite{ghosh-etal:23-subnotificacao}, fazer testes com lacunas
 nos dados para testar a resiliência do método.
 
-\subsection{Arquitetura da Rede}
+\section{Arquitetura da Rede}
 
 Baseando-se em \cite{shaier-etal:22-dinns}, o número de camadas escolhido foi...
 
@@ -287,6 +287,11 @@ $\omega_{\text{dados}}$ ajustável.
 \begin{equation}\label{eq:lambda-aprendivel}
     \omega_{\text{dados}} = \frac{max(\text{gradientes de }\mathcal{L}_{\text{física}})}{\text{média}(\text{gradientes de }\mathcal{L}_{\text{dados}})}
 \end{equation}
+
+\subsection{Regularização L2}
+
+Seguindo os trabalhos de \cite{long-etal:21-L2} e \cite{shamsara-etal:25-omicron},
+é aplicado uma regularização L2 na loss.
 
 \subsection{Correlação com a Temperatura}
 

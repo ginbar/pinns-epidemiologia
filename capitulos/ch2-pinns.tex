@@ -421,25 +421,85 @@ A definição de PINNs como uma rede neural com informação física não se apl
 apenas a redes \textit{feedfoward}, qualquer arquitetura de redes neurais
 que incorpora as equações que descrevem os dados em que rede está sendo treinada, 
 pode ser considerada uma rede neural informada pela física, uma PINN.
-
-PINNs para EDPs estocásticas \cite{zhang-etal:2020-stochastic-pde-pinns}
- 
-Composing partial differential equations with physics-aware neural networks - FINN
-
-gPINNs - Gradient PINNs \cite{mohammadian-etal:2023-gradient-enhanced}
-
-rnn-dct networks \cite{benjamin-etal:2022-rnn-dct-networks}
-
-PhyCRNet \cite{ren-etal:2022-phycrnet}
-
 Desde a publicação do artigo seminal em 2019, uma série de arquiteturas 
 alternativas foram propostas utilizando a ideia das PINNs como princípio.
-Em \cite{shi-etal:24-convnet} é proposto uma arquitetura de rede convolucional
-em que uma única camada convolucional é empregada. Nos testes realizados pelos
-autores, a rede neural proposta apresentou uma convergência melhor do que uma 
-PINN convecional para problemas de difusão com diferentes frequências.
 
-BiPDE \cite{pakravan-et:2021-bipde}
+Uma classe de EDPs de especial interesse para áreas como teoria dos campos quânticos
+e mecânica estatística são as EDPs estocásticas. Esta classe de equações diferenciais
+pode ser entendida como uma equação diferencial com um termo $\xi$ que representa
+um campo com ruído. 
+O exemplo mais simples é a equação do calor estocástica \ref{eq:difusao-estocastica}.
+\begin{equation}\label{eq:difusao-estocastica}
+    \frac{\partial u}{\partial t} = \nabla \cdot u + \xi
+\end{equation}
+Uma proposta de PINNs para EDPs estocásticas é apresentada em \cite{zhang-etal:2020-stochastic-pde-pinns},
+em que são empregados métodos espectrais ortogonais para modelar processos que 
+representam a estocasticidade nos dados. Estes processos são incorporados à função 
+de perda como termos regularizadores extras.  
+Outra arquitetura pensada para a solução de EDPs estocásticas são as FINNs,
+apresentadas em \cite{karlbauer-2022-finns}, que combinam o método de volumes finitos
+com redes neurais para obter soluções para problemas de advecção-difusão como a
+equação de \textit{Burgers} e de \textit{Allen-Cahn}.
+A arquitetura obteve resultados superiores a redes neurais sem informação física
+e até mesmo de PINNs convencionais.   
+
+Um exemplo de proposta de PINNs alternativas que explora limitações das PINNs 
+originais pode ser encontrada em \cite{sun-e-feng:2023-gPINNs}.
+Os autores propõem as gPINNs (Gradient Enhanced PINNs) que tentam contornar as 
+complexidades dos algoritmos de diferenciação automática existentes para equações de alta 
+ordem. A arquitetura utiliza uma função de ativação adaptativa, uma técnica de 
+melhoria nos gradientes para acelerar a convergência do modelo, e uma técnica 
+chamada de \textit{deep mixed residual method} para compensar o \textit{overhead}
+gerado pela melhoria nos gradientes. A arquitetura é empregada na solução de 
+equações de onda da luz.
+Outra proposta similar que também explora o uso de melhorias no gradientes pode 
+ser encontrada em \cite{mohammadian-etal:2023-gradient-enhanced}, tendo como
+maior vantagem a necessidade de poucos dados para treinamento, acelerando o processo
+de treinamento.
+Os autores utilizam o método proposto para gerar estimativas para sistemas de 
+controle de redes elétricas.  
+
+Técnicas como convolução e recorrência, comuns em áreas como visão computacional 
+e processamento de linguagem natural, também encontram espaço na solução de problemas
+científicos. Em \cite{ren-etal:2022-phycrnet} são propostas as PhyCRNet e PhyCRNet-s
+para resolução de EDPs sem dados de treinamento. A arquitetura emprega uma rede
+LSTM \textit{enconder-decoder} com convolução para a extração de características
+espaciais e simulação da evolução do fenômeno no tempo.
+Para evitar o ajuste de hiper-parâmetros, as condições iniciais e de contorno não
+são impostas por meio de penaliadades na função custo, mas como \textit{hard-constraints}.
+Também são utilizadas conexões residuais e autoregressivas para simular a progressão
+do tempo. OS autores obtiveram resultados satisfatórios para problemas como a 
+equação de \textit{Burgers} e problemas de reação-difusão.
+Outro exemplo envolvendo camadas convolucionais pode ser encontrado em 
+\cite{shi-etal:24-convnet}. No artigo é proposto uma arquitetura em que uma única 
+camada convolucional é empregada. Nos testes realizados pelos autores, a rede 
+neural proposta apresentou uma convergência melhor do que uma PINN convecional 
+para problemas de difusão com diferentes frequências.
+
+Outro exemplo de arquiteturas alternativas de redes neurais com informação física
+pode ser encontrada em \cite{benjamin-etal:2022-rnn-dct-networks}. 
+Os autores propoêm as \textit{rnn-dct networks}, que combinam a arquitetura clássica
+de redes residuais (RNN) e DCT (\textit{discrete cossine transformations}) com 
+redes MLP (feedfoward). O DCT é responsável por codificar a parte espacial da equação,
+enquanto que a RNN fica responsável por interpretar os valores temporais.
+O resultado dessas duas redes são então combinados e usados para alimentar a rede
+\textit{feedfoward}, ajudando esta a capturar as relações espaciais e temporais do
+problema. A arquitetura proposta apresentou resultados execelentes em problemas 
+envolvendo as equações de Navier-Stokes, como o problema de vortices de Taylor-Green.
+
+Em \cite{pakravan-et:2021-bipde} é apresentado um método focado na solução de 
+problemos inversos envolvendo EDPs com lacunas nos dados chamado 
+\textit{Blended inverse-PDE networks} BiPDE.
+Os parâmetros da equação são descobertos utilizando não apenas conhecimentos sobre
+a física incorporados a função de perda, mas também utilizando conhecimentos específicos 
+do domínio. 
+A rede neural exerce o papel de aproximador universal dos parâmetros, que combinado 
+com um solucionador de EDPs, livra a rede de ter que resolver o problema de 
+forma direta, focando apenas no problema inverso, tornando o método mais eficiente,
+ao não necessitar de tantos dados para o treinamento.
+O método proposto é testado em problemas inversos envolvendo encontrar coeficientes
+de difusão variantes para as equações de \textit{Burgers} e de \textit{Poisson}, 
+além de problemas de alta dimensionalidade.
 
 Hierarchical learning to solve pdes using physics-informed neural networks.
 \cite{han-etal:2023-hierarchical-learning}
@@ -504,6 +564,15 @@ O método proposto mantêm as vantagens das PINNs, como não precisar de uma
 malha de pontos, e ser capaz de resolver problemas de forma direta e inversa
 sem alterações significativas nos métodos.
 
+As equações de ordem fracionaria, também chamadas de equações diferenciais 
+extraordinárias, são uma classe de equações diferencias que encontram aplicações 
+na modelagem de diversos fenõmenos físicos como escoamentos subterrâneos 
+\cite{atangana-2013-fluxo-ordem-fracionaria} e equações de conservação de massa
+\cite{wheatcraft-2008-conservacao-de-massa-fracionaria}. 
+A equação \ref{eq:exemplo-ordem-fracionaria} mostra a forma geral para tais equações.
+\begin{equation}\label{eq:exemplo-ordem-fracionaria}
+    \dfrac{d^{\alpha}u}{dx^{\alpha}} = u, \quad \alpha \in \mathbb{R}
+\end{equation}
 Em \cite{pang-etal:2019-fPINNs} é proposto uma arquitetura de redes neurais 
 informadas pela física pensada para equações diferenciais de ordem fracionária.
 O principal entrave para o uso de PINNs convecionais na solução dessas equações
