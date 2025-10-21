@@ -2,17 +2,25 @@
 \chapter{Modelos Compartimentais}
 \label{sec-modelos-compartimentais}
 
-A utilização de equações diferencias para modelar fenõmenos físicos data desde do 
-século XVIII. Modelos Compartimentais nada mais são do que modelos epidemiológicos
-utilizados no estudo de doenças contagiosas que separam a população em grupos.
-O fluxo entre esses grupos, chamados de compartimentos, é modelo por operações
-de diferenciação.
+Neste cápitulo são apresentados os principais conceitos acerca dos modelos compartimentais
+para a compreensão do trabalho desenvolvido nesta dissertação. No fim do cápitulo
+é apresentada uma pequena revisão de aplicação de PINNs com modelos compartimentais.
+
+\section{Origens}
+
+Apresnetado no conjunto de trabalhos seminais \cite{kermack-mcKendrick:1927}, 
+\cite{kermack-mcKendrick-pt2:1932} e \cite{kermack-mcKendrick-pt3:1933} e consolidados
+em estudos como \cite{kendall:2023-modelos-epd-estocasticos}, 
+modelos Compartimentais nada mais são do que modelos epidemiológicos utilizados 
+no estudo de doenças contagiosas que separam a população em grupos.
+Os fluxos de indivíduos entre esses grupos, chamados de compartimentos, são modelados 
+por meio de operações de diferenciação.
 
 \section{O modelo SIR}
 
 Apresentado no trabalho seminal de \cite{kermack-mcKendrick:1927}, 
-o modelo \textit{SIR} é definido pelo conjunto de equações \ref{eq:SIR-1}, 
-\ref{eq:SIR-2} e \ref{eq:SIR-3}.
+o modelo \textit{SIR} (Susceptible-Infected-Recovered) é definido pelo conjunto 
+de equações \ref{eq:SIR-1}, \ref{eq:SIR-2} e \ref{eq:SIR-3}.
 
 \begin{eqnarray}\label{eq:sir}
    \frac{dS(t)}{dt} &=& \frac{-\beta S(t)}{N} I(t),  \quad t > t_0, \label{eq:SIR-1}\\
@@ -139,12 +147,47 @@ de indivíduos que se recuperam.
 Uma forma de se calcular o número de reprodução básico $R_0$ é a aplicar a técnica
 de matriz de nova geração\dots
 
-\section{Identificabilidade Estrutural de um Modelo}
+\section{Identificabilidade de um Modelo}
 
 Uma questão pertinente a modelos baseados em equações diferencias é a 
 identificabilidade. A identificabilidade está relacionada a capacidade de 
 estabelecer os parâmetros de um modelo de forma única com base nos dados disponíveis
-e independente das condições iniciais\dots
+e independente das condições iniciais. Há dois tipos de identificabilidade:
+\begin{itemize}
+    \item \textbf{Identificabilidade estrutural:} Refere-se a capacidade de estabelecer
+    os parâmetros de um modelo utilizando dados ideias. Isto é, desprovidos de ruídos
+    e lacunas e dispersos de forma uniforme pelo domínio do problema. 
+    \item \textbf{Identificabilidade prática:} Refere-se a capacidade de estabelecer
+    os parâmetros de um modelo utilizando dados reais que possuem ruído, lacunas 
+    (não foram coletados em todos os dias da semana, por exemplo) ou não estão uniformemente
+    distribuídos pelo domínio do problema (há mais dados referentes a uma semana epidemiológica
+    do outra).
+\end{itemize}
+A análise dos dois tipos de identificabilidade é importante para o estudo de 
+modelos compartimentais. No primeiro caso para o estudo teórico de modelos 
+compartimentais, mais especificamente, para demonstrar teoricamente ser possível 
+estimar parâmetros como $\beta$, $\gamma$ e $\alpha$ de novas propostas de modelos 
+compartimentais utilizando métodos analíticos como álgebra diferencial e 
+expansões por séries de Taylor. 
+No segundo caso para lidar como dados epidemiológicos reais e ter garantias que os
+parâmetros estimados para o modelo têm algum grau de confiabilidade. As técnicas
+mais comuns para se obter os parâmetros a partir de um conjunto de dados são os 
+métodos não-paramétricos como \textit{bootstrapping} e simulações de Monte Carlo, 
+além de outras técnicas estatísticas como matrizes de informação de \textit{Fisher}.  
+
+% \begin{equation}\label{eq:matriz-de-infor-fisher}
+%     F(\mathbf{p}) = E\left[\left(\frac{\partial \log L}{\partial \mathbf{p}}\right)^T \left(\frac{\partial \log L}{\partial \mathbf{p}}\right)\right]
+% \end{equation}
+
+Formalmente, um problema de identificabilidade pode ser expresso pelas equações
+\ref{eq:problema-identificabilidade-1} e \ref{eq:problema-identificabilidade-2}.
+Sendo $\mathbf{p}$ um conjunto de parâmetros, o problema de identificabilidade
+consiste em determinar se $\mathbf{p} \rightarrow \mathbf{y}$ é injetivo. 
+
+\begin{eqnarray}
+\frac{d\mathbf{x}}{dt} &=& f(\mathbf{x}, \mathbf{p}, t) \quad \text{Equações de estado} \label{eq:problema-identificabilidade-1}\\
+\mathbf{y} &=& h(\mathbf{x}, \mathbf{p}, t) \quad \text{Equações de observação} \label{eq:problema-identificabilidade-2}
+\end{eqnarray}
 
 \section{Análise de Sensibilidade}
 
@@ -517,7 +560,8 @@ Um exemplo utilizando redes neurais recorrentes pode ser encontrado
 em \cite{rodriguez-etal:2022-einns}. Os autores propõem uma \textit{framework} 
 que combina uma rede \textit{feedfoward} informada pela física com redes recorrentes.
 O intuito dos autores é desenvolver uma framework pensada para a previsão de 
-tendências no desenvolvimento de uma pandemia a longo prazo.
+tendências no desenvolvimento de uma pandemia a longo prazo incorporando dados 
+das mais diversas fontes.
 
 % No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
 % como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.

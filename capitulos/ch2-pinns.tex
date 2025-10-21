@@ -5,9 +5,10 @@
 \chapter{Redes Neurais Informadas pela Física}
 \label{sec-pinns}
 
-Neste capítulo é feita uma revisão dos principais conceitos utilizados neste
-trabalho, além de apresentar fundamentos para uma compreensão mais profunda dos
-mesmos.
+Neste capítulo é feita uma revisão dos principais conceitos relacionados a 
+redes neurais e redes neurais informadas pela física para a compreensão do trabalho
+desenvolvido. Também é feita uma revisão das principais variantes das redes neurais
+informadas pela física.
 
 \section{Redes Neurais Feedfoward}
 
@@ -197,15 +198,17 @@ do inglês, \textit{mean root square} (\textit{MSE}), como definida na equação
 \end{equation}
 
 Para problemas de classificação de classificação, aplica-se a função de entropia
-cruzada \textit{cross-entropy} \ref{eq:cross-entropy} para problemas de 
-classificação binária.
+cruzada (\textit{cross-entropy}) para problemas de classificação binária, sendo
+$p$ e $q$ duas distribuições a função de perda é definida pela fórmula 
+\ref{eq:cross-entropy}.
 
 \begin{equation}\label{eq:cross-entropy}
-    \mathcal{L} = MSE = - \sum_{i=0}^{N}(\frac{1}{N} y_i - \hat{y}_i)^{2}
+    \mathcal{L} = \mathcal{H}(p,q) = - \sum_{x \in \mathcal{X}}{}p(x) \log q(x)
 \end{equation}
 
 Já para o caso de classificação com multiplos rótulos, aplica-se e a função 
-de \textit{softmax} \ref{eq:softmax}.
+de \textit{softmax}. Para um problema de classificação de multiplos rótulos com 
+$N$ classes, a função de \textit{softmax} é definida pela fórmula \ref{eq:softmax}.
 
 \begin{eqnarray}
     \rho_i &=& \frac{e^{z_i}}{\sum_{i=0}^{N}e^{z_j}} \\
@@ -215,21 +218,48 @@ de \textit{softmax} \ref{eq:softmax}.
 A atualização dos pesos de cada camada se dá pela cálculo do grandiente
 de uma função de erro $\mathcal{L}$. O "tamanho do passo" que será dado
 é determinado por um parâmetro $\alpha$ chamado de taxa de aprendizagem.
+O conjunto de pesos $W$ é então atualizado segundo a fórmula 
+\ref{eq:atualizacao-parametros-redes},
 
-\begin{eqnarray}\label{eq:atualizacao-parametros-redes}
-    W_i^{t + 1} = W_i^{t} + \alpha \nabla \mathcal{L}
-\end{eqnarray}
+\begin{equation}\label{eq:atualizacao-parametros-redes}
+    W_{t + 1} = W_{t} + \alpha \nabla \mathcal{L}
+\end{equation}
 
 A propagação dos erros se dá pelo algoritmo de retropropagação, sendo um caso 
-de aplicação da regra da cadeia. A derivada da 
+de aplicação da regra da cadeia. A derivada da função de perda $\mathcal{L}$ de 
+uma rede com $L$ camadas escondidas pode ser expressa então pela fórmula 
+\ref{eq:derivida-loss}.
 
 \begin{equation}\label{eq:derivida-loss}
     \frac{d\mathcal{L}}{d\sigma^{L}} \cdot 
-    \frac{d\sigma^{L}}{d\sigma^{L}} \cdot
+    \frac{d\sigma^{L}}{dy^{L}} \cdot
+    \frac{dy^{L}}{d\sigma^{L-1}} \cdot
+    \frac{d\sigma^{L-1}}{dy^{L-1}} \cdot
+    \frac{dy^{L-2}}{dy^{L-2}} \cdot
     \cdots
+    \frac{d\sigma^{1}}{dy^{1}} \cdot
+    \frac{dy^{1}}{dx}
 \end{equation}
 
+A atualização dos pesos se dar por meio da avaliação da expressão acima da esquerda 
+para a direita, computando o gradiente $\delta$ em cada camada $l$ e pesos $W^l$
+como descrito pela equação
+\ref{eq:gradiente-camada}
 
+\begin{equation}\label{eq:gradiente-camada}
+    \delta_{l} = (\sigma^l)' \circ (W^{l+1}) \dot (\sigma^{l + 1})' \circ 
+    \cdots 
+    \circ (W^{L-1}) \dot (\sigma^{L-1})' 
+    \circ (W^{L}) \dot (\sigma^{L})'
+    \circ \nabla \mathcal{L}
+\end{equation}
+
+A atualização dos pesos $W$ da camada $l$ utilizando os gradientes $\delta_l$ 
+pode ser expresso pela equação \ref{eq:atualizacao-camada}.
+
+\begin{equation}\label{eq:atualizacao-camada}
+    \nabla_W \mathcal{L} = \delta_l (\sigma^{l-1}) 
+\end{equation}
 
 \section{Redes Neurais Informadas pela Física}
 
