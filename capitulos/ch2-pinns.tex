@@ -221,7 +221,7 @@ de uma função de erro $\mathcal{L}$. O "tamanho do passo" que será dado
 \end{eqnarray}
 
 A propagação dos erros se dá pelo algoritmo de retropropagação, sendo um caso 
-de aplicação da regra da cadeia. A derivada da  
+de aplicação da regra da cadeia. A derivada da 
 
 \begin{equation}\label{eq:derivida-loss}
     \frac{d\mathcal{L}}{d\sigma^{L}} \cdot 
@@ -476,6 +476,18 @@ camada convolucional é empregada. Nos testes realizados pelos autores, a rede
 neural proposta apresentou uma convergência melhor do que uma PINN convecional 
 para problemas de difusão com diferentes frequências.
 
+Pensanda para lidar com problemas ligadas a solução de PDEs com dados que possuem 
+componentes com fequências diferentes, a arquitetura proposta em \cite{han-etal:2023-hierarchical-learning}
+utiliza aprendizado hierarquico para lidar com esse problema.
+O princípio por de trás do aprendizado hierarquico é utilizar camadas com redes
+neurais responsáveis por aproximar uma frequência, assim cada camada 
+adicionada deve aprender a partir dos dados residuais da camada anterior.
+A saída dessas camadas é então alimentada em uma rede de características de Fourier
+embutidas. 
+As primeiras camadas capturam os componentes de menor frequência, enquanto que
+que a rede de características embutidas fica responsável por impor limites a solução.
+A arquitetura proposta é testada com uma série de equações diferenciais parciais.
+
 Outro exemplo de arquiteturas alternativas de redes neurais com informação física
 pode ser encontrada em \cite{benjamin-etal:2022-rnn-dct-networks}. 
 Os autores propoêm as \textit{rnn-dct networks}, que combinam a arquitetura clássica
@@ -500,9 +512,6 @@ ao não necessitar de tantos dados para o treinamento.
 O método proposto é testado em problemas inversos envolvendo encontrar coeficientes
 de difusão variantes para as equações de \textit{Burgers} e de \textit{Poisson}, 
 além de problemas de alta dimensionalidade.
-
-Hierarchical learning to solve pdes using physics-informed neural networks.
-\cite{han-etal:2023-hierarchical-learning}
 
 Propostas em \cite{jagtap-etal:2020-convervative-pinns}, as conservative PINNs 
 (cPINNs) utilizam leis de conservação não-lineares para a solução de problemas 
@@ -592,8 +601,13 @@ resultados equiparáveis ao MEF.
 
 Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
 \cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
-universal de Kolmogorov-Arnold utilizando, foram propostas em as 
-\textit{PIKANs} (\textit{Physically Informed Kolmogorov-Arnold Neural Networks})
+universal de Kolmogorov-Arnold, foram propostas as \textit{PIKANs} 
+(\textit{Physically Informed Kolmogorov-Arnold Neural Networks})
 que combinando as funcões de ativação baseadas em \textit{b-splines} das
-\textit{KANs} com a técnica de regressão simbólica para encontrar uma 
-representação analítica das soluções encontradas pela rede neural.
+\textit{KANs} com a técnica de regressão simbólica, permite encontrar  
+representações analíticas das soluções encontradas pela rede neural.
+As KANs não se mostraram superiores aos MLPs para todo tipo de tarefa 
+\cite{toscano:2025-pinns-para-pikans}, mas sua superiodade com regressão simbólica
+demonstra o potencial da arquitetura para problemas envolvendo explicabilidade.
+
+% \cite{toscano:2025-pinns-para-pikans}
