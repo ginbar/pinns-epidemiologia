@@ -100,6 +100,15 @@ na figura \ref{fig:arquitetura-rede-solucao}.
 \label{fig:arquitetura-rede-solucao}
 \end{figure}
 
+\section{Justificativa para a Escolha do Modelo SIR}
+
+O modelo \textit{SIR} pode não ser o melhor para os testes com dados reais de influenza,
+entretanto, considerando o período de tempo em que o algoritmo foi executado não há 
+necessidade de modelar a possibilidade de reinfecção. O motivo é que, apesar da gripe 
+não gerar imunidade permanente, ainda assim gera imunidade por tempo suficiente
+para poder ser desconsiderada pelo período de um ano. Logo não necessidade de usar
+modelos como o \textit{SIRS} ou \textit{SIS}.  
+
 \section{Testes com Dados Sintéticos}
 
 Para averiguar se o método proposto funcionará bem com dados reais,
@@ -232,13 +241,40 @@ que normalmente são pertubados.
 \end{figure}
 
 
+\section{Testes com diferentes pontos de equilíbrio}
+
+São feitos testes com diferentes pontos de equilíbrio livre de doença, pois uma 
+vez atingindo este ponto de equilíbrio, a rede para de aproximar corretamente o 
+valor de $\beta$. As figuras \ref{fig:dados-semruido-pe2} e \ref{fig:dados-comruido-pe2}
+mostram os dados para o segundo ponto de equilíbrio para os casos de dados com
+e sem ruído, respectivamente.  
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/runge-kutta-compartiments-data-sir-noisy.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-semruido-pe2}
+\end{figure}
+
+\begin{figure}[htpb]
+\centering
+\includegraphics[width=0.6\textwidth]{figuras/runge-kutta-compartiments-data-sir-noisy.png}
+\caption{Na primeira. Fonte: elaborada pelos autores.}
+\label{fig:dados-comruido-pe2}
+\end{figure}
+
+
 \section{Testes com Base de Dados Reais}
 
-Os dados foram coletados do plataforma \textit{OpenDataSUS} \cite{opendatasus}
+São realizados testes utilizando dados reais...
 
-Dados coletados da \cite{flunet}
+\subsection{Base de dados da OMS}
+
+Os dados foram coletados da plataforma \textit{FluNet} \cite{flunet}
 
 \subsection{Bases de dados do DataSUS}
+
+Os dados foram coletados do plataforma \textit{OpenDataSUS} \cite{opendatasus}
 
 \subsection{Tratamento dos Dados}
 
@@ -271,6 +307,13 @@ do domínio de treinamento como em \cite{millevoi-etal:24-split-join-pinns}.
 Assim como em \cite{ghosh-etal:23-subnotificacao}, fazer testes com lacunas
 nos dados para testar a resiliência do método.
 
+\section{Uso da Matriz de Nova Geração}
+
+As condições inicial para os compartimentos \textit{Susceptible} e \textit{Infected}
+podem ser facilmente determinadas pelo número total da populção e número de infectados
+no primeiro dia. O mesmo não acontece para a taxa de transmissão $\beta$. Para 
+estimar o valor $\beta_0$, foi utilizado método de matriz de nova geração.
+
 \section{Arquitetura da Rede}
 
 Baseando-se em \cite{shaier-etal:22-dinns}, o número de camadas escolhido foi...
@@ -292,6 +335,13 @@ $\omega_{\text{dados}}$ ajustável.
 
 Seguindo os trabalhos de \cite{long-etal:21-L2} e \cite{shamsara-etal:25-omicron},
 é aplicado uma regularização L2 na loss.
+
+\begin{equation}\label{eq:regularizacao-L2}
+    \mathcal{L}_2(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|_2 = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
+\end{equation}
+
+Os benefícios ligados ao uso da regularização L2 estão ligados a evitar gradientes
+muito grandes, o que pode compromenter o processo de convergência da rede neural.
 
 \subsection{Correlação com a Temperatura}
 
@@ -334,7 +384,7 @@ usando as fórmulas abaixo.
 \end{equation}
 
 
-\section{Implementação}
+\section{Implementação e Execução}
 
 A implementação foi feita utilizando a biblioteca \textit{DeepXDE} \cite{lu-etal:21-deepxde}, 
 utilizando o \textit{TensorFlow} \cite{tensorflow:16} como \textit{backend}. 
@@ -343,3 +393,5 @@ encontram-se disponíveis no repositório público no
 GitHub\footnote{\url{https://github.com/ginbar/inverse-cm}}.
 As sementes para a geração de pseudonúmeros foram fixadas para garantir
 a reproducibilidade dos experimentos.
+
+Todos os experimentos foram feitos numa máquina com 4GB de ram, processador
