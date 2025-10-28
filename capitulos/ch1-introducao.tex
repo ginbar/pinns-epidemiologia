@@ -59,6 +59,23 @@ as condições de fronteira, sendo a primeira parte aproximada por uma rede neur
 \textit{feedfoward}, e a segunda parte é obtida por meio de restrições duras 
 (\textit{hard constraints}) impostas ao modelo.
 
+Uma série de métodos alternativos, ou seja, que não usam apenas redes neurais 
+\textit{feedfoward} como base, foram propostos utilizando redes neurais para
+a solução de equações diferenciais nos últimos anos. 
+Como exemplo, pode-se citar as \textit{Neural ODE} \cite{chen-etal:2018-neural-ode}, 
+pensadas para a resolução de EDOs, o método define a evolução de uma EDO 
+(interpretando a variável independente como sendo o tempo) como uma rede neural,
+criado uma solução continua para a EDO, em oposição às redes \textit{feedfoward},
+em que representam a evolução do sistema por meio de camadas discretas.  
+Outro exemplo é o \textit{DeepGalerkin} \cite{sirignano-spiliopoulos:2018-deepgalerkin}
+que combina o pricípio do método de Galerkin de solucionar uma EDP em partes do
+domínio, mas utiliza uma rede neural profunda para aproximar as soluções no lugar 
+de métodos lineares aplicados a um conjunto de funções de bases.
+Entre os exemplos mais recentes, é possível citar as 
+\textit{Finite Element Neural Networks} \cite{mitusch:2021-hybrid-fem-nn}, 
+que combinam redes neurais com o FEM, criando um método capaz de resolver problemas
+diretos e inversos com reduzido custo computacional.
+
 Entretanto, foi apenas com \cite{raissi-etal:19} e a introdução do conceito das 
 \textit{Physics Informed Neural Networks} (PINNs) que se renovou o interesse 
 em aplicar redes neurais para a solução de problemas científicos.
@@ -131,10 +148,16 @@ Com a declaração da OMS (Organização Mundial de Saúde) em dezembro de 2019 
 pandemia de COVID-19, o mundo teve que adotar medidas para conter o avanço da 
 doença, como isolamento social e uso de màscaras. Junto às medidas de contenção
 da pandemia, governos mobilizaram os sistemas de saúde para coletar dados
-e permiter aos gorvernantes, e entidades responsáveis pela saúde publica, 
+e permiter aos gorvernantes e entidades responsáveis pela saúde publica, 
 tomar decisões acerca das medidas restrição.  
 Essas ações geraram uma quantidade grande de dados acerca da quantidade de casos
-notificados, internações, tempo de internação e mortes causadas pela COVID-19. 
+notificados, internações, tempo de internação e mortes causadas pela COVID-19.
+Pesquisadores de diferentes áreas trabalharam em cima destes dados tentando
+encaixá-los em modelos compartimentais para oferecer às autoridades projeções
+da evolução da pandemia. As PINNs, que haviam sido propostas há pouco tempo, foram
+logo encaradas como mais uma ferramenta a ser utilizada para a estimativa de 
+parâmetros, sendo que estes podem ser usados para prover uma projeção da evolução
+da doença.   
 
 Pode-se citar \cite{long-etal:21-L2} como um dos primeiros trabalhos a utilizar
 PINNs com modelos compartimentais para dados epidemiológicos. Os autores inovaram 
@@ -143,8 +166,8 @@ as taxas de variação entre os compartimentos como uma função que tem que ser
 aproximada pela rede neural. A vantagem desta abordagem é considerar que medidas
 de contenção do avanço da doença como isolamento social e vacinação da população
 influenciam em taxas como infecção e mortalidade. Vale notar que no trabalho
-mencionado os autores focaram nas taxas de transmissão, períodos curtos de tempo,
-e osmodelos foram capazes de aproximar apenas funções monotônicas para os parâmetros.   
+mencionado os autores focaram nas taxas de transmissão, por períodos curtos de tempo,
+e os modelos foram capazes de aproximar apenas funções monotônicas para os parâmetros.   
 
 Neste trabalho é proposto uma abordagem utilizando PINNs para a indentificação 
 de parâmetros em modelos compartimentais, considerando que há uma variabilidade
@@ -162,19 +185,26 @@ O restante do trabalho está organizado da seguinte forma:
 
 No capítulo \ref{sec-pinns} são formalizados os conceitos de redes neurais e 
 redes neurais informadas pela física, além de uma pequena revisão da literatura
-sobre o assunto. 
+sobre algumas das diferentes arquiteturas alternativas já propostas. 
 
-No capítulo \ref{sec-modelos-compartimentais} são apresentados os modelos compartimentais,
-são discutidas suas propriedades como pontos de equilíbrio e identificabilidade.
-Também é feita uma pequena revisão da literatura sobre o uso de PINNs com 
-modelos compartimentais.
+No capítulo \ref{sec-modelos-compartimentais} são apresentados os modelos 
+epidemiológicos compartimentais e são discutidas suas propriedades mais relavantes 
+para a compreseensão do trabalho desenvolvido nesta dissertação, como pontos de 
+equilíbrio e identificabilidade, além disto são apresentadas algumas das variantes
+mais comuns. 
+Também é feita uma pequena revisão da literatura sobre o uso de PINNs para a 
+estimativa de parâmetros em modelos compartimentais.
 
+No capítulo \ref{sec-proposta} são providos os detalhes do método proposto por este 
+trabalho, como a arquitetura da rede e como o modelo compartimental escolhido é 
+integrado à rede. São definidos os experimentos para averiguar a efetiviade
+do método, tanto os experimentos com dados sintéticos quanto os com dados reais,
+além dos métodos de avaliação dos resultados. 
 
-No capítulo \ref{sec-proposta} é detalhado o método proposto por este 
-trabalho e são definidos os experimentos para averiguar a efetiviade
-do método. 
+No capítulo \ref{sec-avaliacao} são apresentados os resultados dos experimentos
+propostos no cápitulo \ref{sec-proposta} é são feitas pequenas avaliações dos 
+mesmos.
 
-No capítulo \ref{sec-avaliacao} são apresentados os resultados e 
-é feita uma avaliação dos mesmos.
-
-Por fim, no capítulo \ref{sec-conclusoes} são apresentadas as conclusões.    
+Por fim, no capítulo \ref{sec-conclusoes} são apresentadas as conclusões, lacunas
+de pesquisa encontradas, e 
+possibilidades de trabalhos fututos.    

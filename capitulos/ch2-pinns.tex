@@ -269,6 +269,8 @@ as condições de fronteira e iniciais em penalizações para a função custo.
 
 \subsection{PINNs como Solucionadores de Equações Diferenciais}
 
+Cabe aqui prover uma definição formal do que são equações diferencias e como as 
+PINNs resolvem este tipo de equação. 
 PINNs são capazes de resolver problemas no seguinte formato: 
 
 \begin{eqnarray}
@@ -624,11 +626,6 @@ A arquitetura proposta foi capaz de solucionar problemas clássicos como a equa�
 \textit{Burgers} utilizando derivadas parciais de ordem fracionária, obtendo
 resultados equiparáveis ao MEF.
 
-% Em \cite{sirignano-spiliopoulos:2018-deepgalerkin} é proposto o 
-% \textit{DeepGalerkin}, um método sem malhas para a solução de equações
-% diferencias de alta dimensionalidade que combina o método de Galerkin com
-% redes neurais. 
-
 Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
 \cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
 universal de Kolmogorov-Arnold, foram propostas as \textit{PIKANs} 
@@ -640,4 +637,3 @@ As KANs não se mostraram superiores aos MLPs para todo tipo de tarefa
 \cite{toscano:2025-pinns-para-pikans}, mas sua superiodade com regressão simbólica
 demonstra o potencial da arquitetura para problemas envolvendo explicabilidade.
 
-% \cite{toscano:2025-pinns-para-pikans}
