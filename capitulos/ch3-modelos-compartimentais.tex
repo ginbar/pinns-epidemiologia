@@ -63,7 +63,7 @@ O modelo pode ser entendido com um grafo em que os individuas fluem de um
 compartimento para outro a uma taxa $\beta$ e $\gamma$. 
 A figura \ref{fig:sir-grafo} representa o \textit{SIR} por esta perspectiva.
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=2.5cm,
@@ -126,7 +126,7 @@ para entender os efeitos sobre os serviços de saúde pública.
 A figura \ref{fig:exemplo-sir} mostra um exemplo do \textit{SIR} com $\beta=0.8$
 e $\gamma=0.1$ e as três curvas características desse modelo.
 
-\begin{figure}[htpb]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{figuras/sir-example-beta0.8-gamma0.1.png}
 \caption{Exemplo do SIR com $\beta=0.8$ e $\gamma=0.1$.}
@@ -179,17 +179,17 @@ Considere a matriz \ref{eq:jacobiana-sir}.
 
 \begin{equation}\label{eq:jacobiana-sir}
 J(S,I,R) = 
-\begin{pmatrix}
+\begin{bmatrix}
 \frac{\partial f_1}{\partial S} & \frac{\partial f_1}{\partial I} & \frac{\partial f_1}{\partial R} \\[0.5em]
 \frac{\partial f_2}{\partial S} & \frac{\partial f_2}{\partial I} & \frac{\partial f_2}{\partial R} \\[0.5em]
 \frac{\partial f_3}{\partial S} & \frac{\partial f_3}{\partial I} & \frac{\partial f_3}{\partial R}
-\end{pmatrix}
+\end{bmatrix}
 =
-\begin{pmatrix}
+\begin{bmatrix}
 -\beta I & -\beta S & 0 \\
 \beta I & \beta S - \gamma & 0 \\
 0 & \gamma & 0
-\end{pmatrix}
+\end{bmatrix}
 \end{equation}
 
 Utilizando a equação \ref{eq:sir-conjunto-solucoes-eq-livre-doenca} e aplicando-a
@@ -199,11 +199,11 @@ na matriz \ref{eq:jacobiana-sir}, chega-se ao ponto de equilíbrio
 \begin{equation}\label{eq:equilíbrio-sir}
 J(S*,0,R*)
 =
-\begin{pmatrix}
+\begin{bmatrix}
 0 & -\beta S & 0 \\
 0 & \beta S - \gamma & 0 \\
 0 & \gamma & 0
-\end{pmatrix}
+\end{bmatrix}
 \end{equation}
 
 Os autovalores dessa matriz são $\gamma_1=0$, $\gamma_2=0$, $\gamma_3=\beta S* - \gamma$. 
@@ -214,16 +214,44 @@ de equilíbrio é estável.
 
 Uma forma de se calcular o número de reprodução básico $R_0$ é a aplicar a técnica
 de matriz de nova geração. Proposta por \cite{diekmann:1990-matriz-de-nova-geracao},
-o método consiste em 
+a ideia central do método é linearizar o sistema no ponto de equilíbrio livre de
+doença (DFE) e separar a taxa de novas infecções das outras transições. 
 
-\begin{itemize}
-    \item Divida toda a popuiação em $n$ compartimentos de tamanho $m$ tal que 
-    $m < n$.
+O método consiste nos seguintes passos:
 
-\end{itemize}
+\begin{enumerate}
+    \item Divida toda a população $x_i$ em $n$ compartimentos de infectados 
+    (Infected, Exposed, Asymptotic, etc.) de tamanho $m$ tal que $m < n$:
+    \begin{equation}
+        x_i = 1, 2, 3, 4, \dots, m-1, m
+    \end{equation}
+    \item No ponto de equilíbrio livre de doença (DFE), o subsistema de infectados pode
+    ser escrito como:
+    \begin{equation}
+        \frac{dx}{dt} = \mathcal{F}(x) - \mathcal{V}(x)
+    \end{equation}
+    \item Compute as matrizes jacobianas $\mathcal{F}$ e $\mathcal{V}$, 
+    sendo que $\mathcal{F}$ representa a taxa de novas infecções, e $\mathcal{V}$
+    representa as taxas das outras transições:
+    \begin{equation}
+        F = \begin{bmatrix}
+            \frac{\partial\mathcal{F}_i}{\partial x_j}
+        \end{bmatrix}_{DFE}
+        \qquad,
+        \qquad
+        V = \begin{bmatrix}
+            \frac{\partial\mathcal{V}_i}{\partial x_j}
+        \end{bmatrix}_{DFE}
+    \end{equation}
+    \item Cálcule o número de reprodução básico $R_0$, sendo $\rho$ os autovalores
+    dominantes:
+    \begin{equation}
+        R_0 = \rho(FV^{-1})
+    \end{equation}
+\end{enumerate}
 
-Aplicando o método descrito acima para o modelo \textit{SIR} obtem-se as seguintes
-definições:
+Aplicando o método descrito acima para o modelo \textit{SIR} que possui apenas um
+compartimento com pessoas infectadas (I), obtem-se as seguintes definições:
 
 \begin{equation}
 \frac{dI}{dt} = \underbrace{\beta SI}_{\mathcal{F}} - \underbrace{\gamma I}_{\mathcal{V}}
@@ -238,10 +266,17 @@ V = \frac{\partial \mathcal{V}}{\partial I} = \gamma
 FV^{-1} = (\beta N)\left(\frac{1}{\gamma}\right) = \frac{\beta N}{\gamma}
 \end{equation}
 
-\begin{equation}
-R_0 = \rho(FV^{-1}) = \frac{\beta N}{\gamma}
+O número de reprodução básico é então calculado utilizando a equação 
+\ref{eq:matriz-nova-geracao-r0}.
+
+\begin{equation}\label{eq:matriz-nova-geracao-r0}
+R_0 = \rho(FV^{-1}) = \frac{\beta N}{\gamma} 
 \end{equation}
 
+Este método pode ser aplicado aos dados de incidência de infectados para se obter
+uma estimativa para $R_0$. 
+Considerando a equação \ref{eq:numero-reproducao-basico}, pode-se estimar os valores
+dos parâmetros do modelo utilizando o método de matriz de nova geração.
 
 \section{Identificabilidade de um Modelo}
 
@@ -292,6 +327,15 @@ inicias reais.
 
 \section{Análise de Sensibilidade}
 
+Um assunto de importância para a solução de problemas inversos envolvendo modelos 
+compartimentais é a análise de sensibilidade
+
+Análise de sensibilidade local\dots
+
+Análise de sensibilidade global\dots
+
+Análise de senbilidade do SIR\dots
+
 Partial Rank Correlation Coefficients (PRCC)
 
 \section{Problemas Inversos}
@@ -323,7 +367,7 @@ compartimentos, como o \textit{SIRD} (Susceptible-Infected-Recovered-Deacesed)
 para os indivíduos que se recuperaram (R) e outro para os que vieram a falecer devido
 a doença (D).
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=2.5cm,
@@ -355,7 +399,7 @@ foram expostos a doença, mas ainda não manifestaram sintomas, ele é aplicáve
 doenças que possuem um tempo de latência entre o contanto com patogêneo e o surgimento
 dos sintomas e capacidade do indivíduo de transmitir a doença. 
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=1.5cm,
@@ -378,7 +422,7 @@ dos sintomas e capacidade do indivíduo de transmitir a doença.
     \draw (I) edge[->] node[label,above] {$\alpha$} (R);
 
 \end{tikzpicture}
-\caption{Grafo para o \textit{SIRD}. Fonte: elaborada pelos autores.}
+\caption{Grafo para o \textit{SEIR}. Fonte: elaborada pelos autores.}
 \label{fig:seir-grafo}
 \end{figure}
 
@@ -389,7 +433,7 @@ não geram imunidade, como gripe e resfriado.
 Obviamente, é possível extender esse modelo, como é o caso do \textit{SEIS}, sendo
 o \textit{SIS} com um compartimento para indivíduos expostos. 
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=2.5cm,
@@ -419,7 +463,7 @@ e o \textit{SIRVD}. Indivíduos são vacinados a uma taxa $\alpha$ e adquirem im
 à doença. Um parâmetro $\phi$ pode ser adicionado para dar conta de casos em que
 a vacinação não é eficaz. 
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=2.5cm,
@@ -442,7 +486,7 @@ a vacinação não é eficaz.
     \draw (S) edge[->] node[label,above] {$\alpha$} (V);
 
 \end{tikzpicture}
-\caption{Grafo para o \textit{SIRD}. Fonte: elaborada pelos autores.}
+\caption{Grafo para o \textit{SIRV}. Fonte: elaborada pelos autores.}
 \label{fig:sirv-grafo}
 \end{figure}
 
@@ -455,8 +499,15 @@ modelar a pandemia de COVID-19. Outro exemplo é o \textit{SEIHDR}.
 
 Ao longo dos anos foram propostas diferentes variantes do módelo \textit{SIR} original,
 esta seção se dedica a abordar alguns exemplos brevemente. 
-Em \cite{noble:1974-sir-difusao} é proposto uma variante do modelo que 
-Em \cite{singh-gupta:2022-generalized-sir} é proposto     
+Em \cite{noble:1974-sir-difusao} é proposto uma variante do modelo que adiciona
+uma variável espacial e cria um problema de difusão... 
+Em \cite{singh-gupta:2022-generalized-sir} é proposto o Generalized SIR, GSIR...
+Em \cite{andreu-vilarroig-etal:2025-sugestao-beta-t} é proposto um modelo que 
+considera diferentes subcompartimentos para lidar com as diferentes ondas de 
+influenza...
+Outro exemplo que lida com as ondas de influenza \cite{lin:2003-sir-influenza}
+Pode ser \cite{krylova:2013-sir-erlang}
+    
 
 \section{Aplicação de PINNs com Modelos Compartimentais}
 

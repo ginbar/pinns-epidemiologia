@@ -26,7 +26,7 @@ produz uma saída. Esta estrutura de neurõnio artificial foi proposta em
 \cite{mcculloch-pitts:1943-perceptron} e está esquematizada na figura 
 \ref{fig:neuronio-de-pitts}.  
 
-\begin{figure}[htpb]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     neuron/.style={circle, draw=black, fill=blue!20, minimum size=1.2cm},
@@ -125,7 +125,7 @@ da camada escondida $l$, $l \in [1,..,L]$,
 A figura \ref{fig:feedfoward-representacao-grafica} resume graficamente a
 definição presente na equação \ref{eq:rede-neural-composta}.
 
-\begin{figure}[htpb]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     neuron/.style={circle, draw, minimum size=0.7cm},
@@ -307,21 +307,35 @@ não-supervisionado que busca minimizar o residual definido.
     %+ \omega_{data} J_{data}(\boldsymbol{x},t,\boldsymbol{\theta})
 \end{equation}
 
-Sendo $\omega_{\text{domínio}}$, $\omega_{\text{fronteira}}$ 
-e $\omega_{\text{inicial}}$ pesos atribuídos a cada um dos residuais.
 Caso haja dados disponíveis, é feito um treinamento supervisionado utilizando 
 tais dados. A função de perda final da rede neural é então definida pela equação
 \ref{eq:loss-total}.
 
-\begin{eqnarray}\label{eq:loss-total} 
+\begin{equation}\label{eq:loss-total} 
     \mathcal{L}_{\text{total}}(\boldsymbol{\theta}) 
     = \omega_{\text{física}} \mathcal{L}_{\text{física}}(\boldsymbol{\theta}) 
     + \omega_{\text{dados}} \,\mathcal{L}_{\text{dados}}(\boldsymbol{\theta})
-\end{eqnarray}
+\end{equation}
 
 Aqui vale menciona que esta não é a única forma de distribuir os pesos da loss,
 a implementação da biblioteca \textit{DeepXDE} \cite{lu-etal:21-deepxde}
-permite atribuir pesos diferentes a cada condição inicial e de fronteira. 
+permite atribuir pesos diferentes a cada condição inicial e de fronteira.
+Logo, uma forma alternativa de descrever a equação \ref{eq:loss-fisica}.
+
+\begin{equation}\label{eq:loss-fisica-alternativa}
+    \mathcal{L}_{\text{física}}(\boldsymbol{\theta}) 
+    = \omega_{\text{domínio}}\mathcal{L}_{\mathcal{D}}(\boldsymbol{x},t,\boldsymbol{\theta}) 
+    + \omega_{\text{fronteira}}\mathcal{L}_{\mathcal{B}}(\boldsymbol{x},t,\boldsymbol{\theta}) 
+    + \omega_{\text{inicial}}\mathcal{L}_{\mathcal{I}}(\boldsymbol{x},t_0,\boldsymbol{\theta}) 
+    %+ \omega_{data} J_{data}(\boldsymbol{x},t,\boldsymbol{\theta})
+\end{equation}
+
+Sendo $\omega_{\text{domínio}}$, $\omega_{\text{fronteira}}$ 
+e $\omega_{\text{inicial}}$ pesos atribuídos a cada um dos residuais. 
+Obviamente, como problemas envolvendo equações diferencias podem envolver mais
+de uma condição inicial ou de fronteira, um peso diferente pode se atribuído a
+cada condição.
+
 Então o problema passa a ser encontrar os conjuntos $\boldsymbol{\theta}^*$ de 
 parâmetros e viéses da rede que minimiza a função \ref{eq:loss-total}.
 
@@ -337,9 +351,9 @@ primeira ordem \textit{Adam} \cite{kingma-ba:14-adam} e o método quase-newtonia
 memória, o \textit{L-BFGS} \cite{liu-nocedal:89-lbfgs}.
 
 A figura \ref{fig:pinn-representacao-grafica} mostra uma representação gráfica das 
-PINNs.
+PINNs que sumariza o que foi explicado nesta seção.
 
-\begin{figure}[htpb]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     neuron/.style={circle, draw, minimum size=0.7cm},
@@ -625,6 +639,10 @@ das derivadas e derivadas númericas para a parte fracionária.
 A arquitetura proposta foi capaz de solucionar problemas clássicos como a equação de 
 \textit{Burgers} utilizando derivadas parciais de ordem fracionária, obtendo
 resultados equiparáveis ao MEF.
+
+Outra proposta de solução de derivadas fracionárias \cite{wang:2022-time-fractional-pinns}...
+
+Pensadas para a solução de EDOs, as \cite{belbuteperes:2021-hyperpinns}...
 
 Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
 \cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
