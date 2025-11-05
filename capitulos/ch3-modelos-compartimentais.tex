@@ -251,7 +251,8 @@ O método consiste nos seguintes passos:
 \end{enumerate}
 
 Aplicando o método descrito acima para o modelo \textit{SIR} que possui apenas um
-compartimento com pessoas infectadas (I), obtem-se as seguintes definições:
+compartimento com pessoas infectadas (I) e considerando uma população de tamanho $N$, 
+obtem-se as seguintes definições:
 
 \begin{equation}
 \frac{dI}{dt} = \underbrace{\beta SI}_{\mathcal{F}} - \underbrace{\gamma I}_{\mathcal{V}}
@@ -352,16 +353,22 @@ parâmetros são alterados ao mesmo tempo.
 O método mais comum para este tipo de análise de sensibilidade é o método 
 de Sobol.
 
-Sendo a variância da saída $\mathcal{Y}$ definido pela equação \ref{eq:variancia-sobol}.
+Considerando que a variância $V_i$ pode ser calculada pela fórmula \ref{eq:variancia-metodo-sobol-1}.
 
-\begin{equation}\label{eq:variancia-sobol}
-    var(\mathcal{Y}) = \sum_{i=1}^{d}V_i + \sum_{i<j}^{d} V_{ij} + \dots +  
+\begin{equation}\label{eq:variancia-metodo-sobol-1}
+    V_i = var_{x_i}(E_{x_{~i}}(Y|X_i))
 \end{equation}
 
-E considerando 
+E que a variância $V_{ij}$ pode ser calculada pela fórmula \ref{eq:variancia-metodo-sobol-2}.
 
-\begin{equation}
-    V_i = var_{x_i}()
+\begin{equation}\label{eq:variancia-metodo-sobol-2}
+    V_{ij} = var_{x_{ij}}(E_{x_{~ij}}(Y|X_i,X_j)) - V_i - V_j
+\end{equation}
+
+Então a variância da saída $\mathcal{Y}$ é definida pela equação \ref{eq:variancia-sobol}.
+
+\begin{equation}\label{eq:variancia-sobol}
+    var(\mathcal{Y}) = \sum_{i=1}^{d}V_i + \sum_{i<j}^{d} V_{ij} + \dots +  V_{dd}
 \end{equation}
 
 A sensibilidade $S_i$ é então calculada pela fórmula 
@@ -397,11 +404,13 @@ há mais de uma solução possível para um problema inverso.
 
 \section{Adicionando Compartimentos}
 
-Baseados no modelo \textit{SIR}, foram propostos outros modelos com mais 
-compartimentos, como o \textit{SIRD} (Susceptible-Infected-Recovered-Deacesed) 
+Baseados no conjunto de modelos apresentados em \cite{kermack-mcKendrick:1927} modelo \textit{SIR}, 
+foram propostos outros modelos com mais compartimentos, 
+
+Como primeiro exemplo, pode-se mencionar o \textit{SIRD} (Susceptible-Infected-Recovered-Deacesed) 
 \cite{giles:77-sird} que separa o compartimento de \textit{Recovered} em dois, um
 para os indivíduos que se recuperaram (R) e outro para os que vieram a falecer devido
-a doença (D).
+a doença (D). Um novo parâmetro de taxa de mortalidade $\alpha$ é adicionado. 
 
 \begin{figure}[H]
 \centering
@@ -778,7 +787,9 @@ em \cite{rodriguez-etal:2022-einns}. Os autores propõem uma \textit{framework}
 que combina uma rede \textit{feedfoward} informada pela física com redes recorrentes.
 O intuito dos autores é desenvolver uma framework pensada para a previsão de 
 tendências no desenvolvimento de uma pandemia a longo prazo incorporando dados 
-das mais diversas fontes.
+das mais diversas fontes. São utilizados dados de incidência de uma pandemia como 
+número de hospitalizados, mas também são incorporados dados de pesquisas de redes 
+sociais, criando uma framework que trabalha com dados de alta dimensionalidade.
 
 % No artigo original, são utilizados \textit{Multi-layer Perceptrons} (MLPs)
 % como arquitetura das redes, mas há propostas com utilizando outras arquiteturas.

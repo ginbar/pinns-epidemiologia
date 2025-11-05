@@ -639,10 +639,25 @@ das derivadas e derivadas númericas para a parte fracionária.
 A arquitetura proposta foi capaz de solucionar problemas clássicos como a equação de 
 \textit{Burgers} utilizando derivadas parciais de ordem fracionária, obtendo
 resultados equiparáveis ao MEF.
+Outra proposta de solução de derivadas fracionárias é apresentada em \cite{wang:2022-time-fractional-pinns},
+os autores extendem as fPINNs ao utilizar métodos de colocação espectral para 
+decidir quais pontos de colocação serão utilizados. O método proposto é empregado
+para a solução de problemas diretos e inversos envolvendo modelos de fase de 
+campos de ordem fracionária.
 
-Outra proposta de solução de derivadas fracionárias \cite{wang:2022-time-fractional-pinns}...
-
-Pensadas para a solução de EDOs, as \cite{belbuteperes:2021-hyperpinns}...
+Pensadas para a solução de EDOs, mas sendo também capazes de resolver EDPs, as 
+\textit{hyperPINNs}, propostas em \cite{belbuteperes:2021-hyperpinns}, são capazes
+de resolver qualquer equação diferencias utilizando \textit{hypernetworks} com
+redes com informação física. 
+Hypernetworks são um método de meta-aprendizagem que separam a aprendizagem em duas
+redes, uma responsável pela tarefa em sí, e uma segunda responsável pela geração
+dos parâmetros da primeira.
+A grande novidade do método é a capacidade de obter uma família de soluções
+para equações diferencias dentro de uma espaço de parâmetros, evitando que para cada
+nova configuração de parâmetros para uma equação diferencial (parâmetros da equação)
+seja necessário treinar a rede novamente.
+No artigo, os autores testam o modelo proposto para a solução da equação de Burgers
+e sistemas de Lorenz. 
 
 Baseado nas \textit{KANs} (\textit{Kolmogorov-Arnold Neural Networks})
 \cite{liu-etal:2025-kans}, redes neurais baseadas no teorema de representação 
